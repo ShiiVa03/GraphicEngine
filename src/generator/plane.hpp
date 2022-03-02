@@ -11,7 +11,4 @@ class Plane{
         std::vector<Point> draw();        
 };
 
-
-
-
 #endif

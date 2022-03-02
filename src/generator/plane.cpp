@@ -1,7 +1,7 @@
-#include "plane.hpp"
-#include "../utils/point.hpp"
-#include <vector>
 #include "../utils/vector.hpp"
+#include "../utils/point.hpp"
+#include "plane.hpp"
+#include <vector>
 
 Plane::Plane(float s, float d){
     size = s;

@@ -1,0 +1,8 @@
+/home/shiiva/Desktop/Uni/CG/trabalho/CG/build/CMakeFiles/edit_cache.dir
+/home/shiiva/Desktop/Uni/CG/trabalho/CG/build/CMakeFiles/rebuild_cache.dir
+/home/shiiva/Desktop/Uni/CG/trabalho/CG/build/src/generator/CMakeFiles/generator.dir
+/home/shiiva/Desktop/Uni/CG/trabalho/CG/build/src/generator/CMakeFiles/edit_cache.dir
+/home/shiiva/Desktop/Uni/CG/trabalho/CG/build/src/generator/CMakeFiles/rebuild_cache.dir
+/home/shiiva/Desktop/Uni/CG/trabalho/CG/build/src/utils/CMakeFiles/utils.dir
+/home/shiiva/Desktop/Uni/CG/trabalho/CG/build/src/utils/CMakeFiles/edit_cache.dir
+/home/shiiva/Desktop/Uni/CG/trabalho/CG/build/src/utils/CMakeFiles/rebuild_cache.dir
