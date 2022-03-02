@@ -1,6 +1,8 @@
 #ifndef POINT_H
 #define POINT_H
 
+#include "vector.hpp"
+
 class Point{
     public:
         float x, y, z;
