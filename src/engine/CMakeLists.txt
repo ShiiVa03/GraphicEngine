@@ -41,9 +41,9 @@ else (WIN32) #Linux and Mac
 endif(WIN32)
 
 
-add_executable(generator main.cpp plane.cpp box.cpp)
+add_executable(engine main.cpp camera.cpp model.cpp)
 
-target_link_libraries(generator utils 
+target_link_libraries(engine utils pugixml
                 ${OPENGL_LIBRARIES}
                 ${GLUT_LIBRARIES}
                 ${TOOLKITS_FOLDER}/glut/glut32.lib)
