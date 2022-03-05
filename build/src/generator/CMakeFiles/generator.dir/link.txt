@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/generator.dir/main.cpp.o CMakeFiles/generator.dir/plane.cpp.o CMakeFiles/generator.dir/box.cpp.o -o generator  ../utils/libutils.a /usr/lib/libGL.so /usr/lib/libGLU.so -lglut 

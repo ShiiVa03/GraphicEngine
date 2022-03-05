@@ -1,5 +1,6 @@
 #include "pugixml.hpp"
 #include "../utils/point.hpp"
+#include "../utils/spherical_point.hpp"
 #include "camera.hpp"
 #include "model.hpp"
 #include <iostream>
@@ -107,7 +108,7 @@ void renderScene(void) {
 int main(int argc, char** argv) {
 
     pugi::xml_document doc;
-    pugi::xml_parse_result result = doc.load_file("a.xml");
+    pugi::xml_parse_result result = doc.load_file("test_1_5.xml");
 
     if (!result) {
         std::cout << "ERROR" << std::endl;
@@ -187,11 +188,6 @@ int main(int argc, char** argv) {
     glutMainLoop();
 
     return 1;
-
-
-    
-    
-    
 
 
     std::cout << "boas" << std::endl;

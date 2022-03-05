@@ -2,6 +2,7 @@
 #define POINT_H
 
 #include "vector.hpp"
+#include "../utils/spherical_point.hpp"
 
 class Point{
     public:
@@ -9,6 +10,7 @@ class Point{
 	Point(){};
         Point(float x, float y, float z);
         void addVector(Vector vec);
+        Point toCartesian(SphericalPoint sp);
         
 };
 

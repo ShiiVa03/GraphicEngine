@@ -1,2 +1,0 @@
-/usr/bin/ar qc libutils.a CMakeFiles/utils.dir/point.cpp.o CMakeFiles/utils.dir/vector.cpp.o
-/usr/bin/ranlib libutils.a

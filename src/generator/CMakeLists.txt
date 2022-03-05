@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.9)
 
+
+add_executable(generator main.cpp plane.cpp box.cpp)
+
 find_package(OpenGL REQUIRED)
 include_directories(${OpenGL_INCLUDE_DIRS})
 link_directories(${OpenGL_LIBRARY_DIRS})
@@ -26,6 +29,11 @@ if  (WIN32)
     endif(EXISTS "${TOOLKITS_FOLDER}/glut/glut32.dll" )    
     
     set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${PROJECT_NAME})
+
+    target_link_libraries(generator utils 
+                ${OPENGL_LIBRARIES}
+                ${GLUT_LIBRARIES}
+                ${TOOLKITS_FOLDER}/glut/glut32.lib)
     
 else (WIN32) #Linux and Mac
 
@@ -36,14 +44,13 @@ else (WIN32) #Linux and Mac
     if(NOT GLUT_FOUND)
        message(ERROR ": GLUT not found!")
     endif(NOT GLUT_FOUND)
+
+    target_link_libraries(generator utils 
+                ${OPENGL_LIBRARIES}
+                ${GLUT_LIBRARIES})
     
 
 endif(WIN32)
 
 
-add_executable(generator main.cpp plane.cpp box.cpp)
 
-target_link_libraries(generator utils 
-                ${OPENGL_LIBRARIES}
-                ${GLUT_LIBRARIES}
-                ${TOOLKITS_FOLDER}/glut/glut32.lib)

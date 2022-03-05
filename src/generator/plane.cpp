@@ -61,8 +61,8 @@ void Plane::drawPlane(std::vector<Point>& points, Point origin, Vector horizonta
 std::vector<Point> Plane::draw(){
     std::vector<Point> points;
 
-    float vectorSize = size;
-    float half = (size * divisions) / 2;
+    float vectorSize = size / divisions;
+    float half = size / 2;
 
     drawPlane(points, Point(-half, 0, -half), Vector(vectorSize, 0, 0), Vector(0, 0, vectorSize));
 

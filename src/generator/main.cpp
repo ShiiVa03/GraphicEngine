@@ -5,8 +5,9 @@
 #include "../utils/point.hpp"
 #include <iostream>
 #include <string>
+#include <fstream>
 
-
+/*
 #ifdef __APPLE__
 #include <GLUT/glut.h>
 #else
@@ -187,23 +188,61 @@ int main(int argc, char** argv) {
 
     return 1;
 }
-/*
-int main(int argc, char **argv) {
-    float edge = 2;
-    float divisions = 3;
-    std::vector<Point> points;
+*/
 
-    std::cout << "BOAS" << std::endl;
-
-
-    Plane plane(edge, divisions);
-    points = plane.draw();
- 
-    for (int i = 0; i < points.size(); ++i) {
-        std::cout << std::to_string(points.at(i).x) + " "+ std::to_string(points.at(i).y) + " " + std::to_string(points.at(i).z) << std::endl;
+void writeToFile(std::vector<Point>& points, std::string filename){
+    std::ofstream file(filename);
+    file << points.size() << std::endl;
+    for(auto const& point : points){
+        file << point.x << " " << point.y << " " << point.z <<std::endl;
     }
+
+    file.close();
+
+}
+
+int main(int argc, char **argv) {
+
+    if(argc < 2) {
+        std::cout << "Necessita de pelo menos dois argumentos" << std::endl;
+        return 1;
+    }
+    std::vector<Point> points;
+    std::string figure(argv[1]);
+    std::string file;
+
+    if(!figure.compare("plane")){
+        if(argc == 5){
+            float size = atof(argv[2]);
+            float divisions = atof(argv[3]);
+            file = argv[4];
+
+            Plane plane(size, divisions);
+            points = plane.draw();
+                                
+        }else{
+            std::cout << "Plane necessita de 4 argumentos" << std::endl;
+        }
+    }else if(!figure.compare("box")){
+        if(argc == 5){
+            float size = atof(argv[2]);
+            float divisions = atof(argv[3]);
+            file = argv[4];
+
+            Box box(size, divisions);
+            points = box.draw();
+                                
+        }else{
+            std::cout << "Box necessita de 4 argumentos" << std::endl;
+        }
+    }else{
+        std::cout << "Comando nao disponivel" << std::endl;
+    }
+    
+    if(!points.empty())
+        writeToFile(points, file);
 
     return 0;
     
 }
-*/
+
