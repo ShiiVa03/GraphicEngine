@@ -5,4 +5,3 @@ Vector::Vector(float va, float vb, float vc){
     vy = vb;
     vz = vc;
 };
-

@@ -25,3 +25,12 @@ Point Point::toCartesian(SphericalPoint sp){
     return Point(x,y,z);
 
 }
+
+Point Point::toCartesianNoBeta(float alpha, float radius, float height){
+    float x = radius * sin(alpha);
+    float y = height;
+    float z = radius * cos(alpha);
+
+    return Point(x,y,z);
+
+}

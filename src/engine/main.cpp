@@ -67,7 +67,7 @@ void renderScene(void) {
     // put the geometric transformations here
 
     // put drawing instructions here
-    
+    /*
     glBegin(GL_LINES);
     // X axis in red
     glColor3f(1.0f, 0.0f, 0.0f);
@@ -82,7 +82,7 @@ void renderScene(void) {
     glVertex3f(0.0f, 0.0f, -100.0f);
     glVertex3f(0.0f, 0.0f, 100.0f);
     glEnd();
-
+*/
     glColor3f(1.0f, 1.0f, 1.0f);
 
     glBegin(GL_TRIANGLES);
@@ -108,7 +108,7 @@ void renderScene(void) {
 int main(int argc, char** argv) {
 
     pugi::xml_document doc;
-    pugi::xml_parse_result result = doc.load_file("test_1_5.xml");
+    pugi::xml_parse_result result = doc.load_file("test_1_2.xml");
 
     if (!result) {
         std::cout << "ERROR" << std::endl;

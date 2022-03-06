@@ -1,6 +1,7 @@
 #include <math.h>
 #include "plane.hpp"
 #include "box.hpp"
+#include "cone.hpp"
 #include <vector>
 #include "../utils/point.hpp"
 #include <iostream>
@@ -221,7 +222,7 @@ int main(int argc, char **argv) {
             points = plane.draw();
                                 
         }else{
-            std::cout << "Plane necessita de 4 argumentos" << std::endl;
+            std::cout << "Plane necessita de 3 argumentos" << std::endl;
         }
     }else if(!figure.compare("box")){
         if(argc == 5){
@@ -233,7 +234,22 @@ int main(int argc, char **argv) {
             points = box.draw();
                                 
         }else{
-            std::cout << "Box necessita de 4 argumentos" << std::endl;
+            std::cout << "Box necessita de 3 argumentos" << std::endl;
+        }
+    }else if(!figure.compare("cone")){ 
+        if(argc == 7){
+            
+            float radius = atof(argv[2]);
+            float height = atof(argv[3]);
+            float slices = atof(argv[4]);
+            float stacks = atof(argv[5]);
+            file = argv[6];
+
+            Cone cone(radius, height, slices, stacks);
+            points = cone.draw();
+            
+        }else{
+            std::cout << "Cone necessita de 5 argumentos" << std::endl;
         }
     }else{
         std::cout << "Comando nao disponivel" << std::endl;
@@ -241,6 +257,7 @@ int main(int argc, char **argv) {
     
     if(!points.empty())
         writeToFile(points, file);
+
 
     return 0;
     

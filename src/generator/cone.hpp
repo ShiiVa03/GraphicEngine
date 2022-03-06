@@ -2,6 +2,7 @@
 #define CONE_H
 
 #include "../utils/point.hpp"
+#include <vector>
 
 class Cone{    
     public:

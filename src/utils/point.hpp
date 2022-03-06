@@ -11,7 +11,7 @@ class Point{
         Point(float x, float y, float z);
         void addVector(Vector vec);
         Point toCartesian(SphericalPoint sp);
-        
+        Point toCartesianNoBeta(float alpha, float radius, float height);
 };
 
 #endif

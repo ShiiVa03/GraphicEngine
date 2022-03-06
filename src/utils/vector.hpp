@@ -6,6 +6,7 @@ class Vector{
     public:
         float vx, vy, vz;
         Vector(float vx, float vy, float vz);
+
         
 };
 
