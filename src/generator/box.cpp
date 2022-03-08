@@ -36,6 +36,4 @@ std::vector<Point> Box::draw(){
 
     return points;
 
-
-
 }

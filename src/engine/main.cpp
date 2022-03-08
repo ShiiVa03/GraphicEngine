@@ -1,5 +1,5 @@
 #include "../utils/point.hpp"
-#include "../utils/spherical_point.hpp"
+#include "../utils/spherical_coord.hpp"
 #include "parsing.hpp"
 #include "camera.hpp"
 #include "model.hpp"
