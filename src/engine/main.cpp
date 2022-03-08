@@ -1,11 +1,12 @@
-#include "pugixml.hpp"
 #include "../utils/point.hpp"
 #include "../utils/spherical_point.hpp"
+#include "parsing.hpp"
 #include "camera.hpp"
 #include "model.hpp"
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <string>
 #include <unordered_map>
 
 #ifdef __APPLE__
@@ -14,12 +15,11 @@
 #include <GL/glut.h>
 #endif
 
-Camera camera;
-std::vector<std::string> queueModels;
-std::unordered_map<std::string, Model> models;
+static Camera camera;
+static std::vector<std::string> models;
+static std::unordered_map<std::string, std::vector<Point>> models_vertices;
 
 bool entered = false;
-
 
 void changeSize(int w, int h) {
 
@@ -86,10 +86,10 @@ void renderScene(void) {
     glColor3f(1.0f, 1.0f, 1.0f);
 
     glBegin(GL_TRIANGLES);
-    for (const auto &fileName: queueModels) {
-        Model& model = models.at(fileName);
+    for (const auto &fileName: models) {
+        std::vector<Point> &vertices = models_vertices.at(fileName);
 
-        for (const auto& point : model.vertices) {
+        for (const auto& point : vertices) {
             if (!entered) {
                 std::cout << point.x << "|" << point.y << "|" << point.z << std::endl;
             }
@@ -103,65 +103,36 @@ void renderScene(void) {
     glutSwapBuffers();
 }
 
-
-
-int main(int argc, char** argv) {
-
-    pugi::xml_document doc;
-    pugi::xml_parse_result result = doc.load_file("test_1_2.xml");
-
-    if (!result) {
-        std::cout << "ERROR" << std::endl;
-        return -1;
-    }
-
-    pugi::xml_node toolWorld = doc.child("world");
-
-    pugi::xml_node toolCamera = toolWorld.child("camera");
-
-    pugi::xml_node tool;
+bool initContext(char * filename) {
     
-    tool = toolCamera.child("position");
-    Point eye(tool.attribute("x").as_float(), tool.attribute("y").as_float(), tool.attribute("z").as_float());
+    if (!parse(filename, camera, models))
+        return false;
 
-    tool = toolCamera.child("lookAt");
-    Point center(tool.attribute("x").as_float(), tool.attribute("y").as_float(), tool.attribute("z").as_float());
-    
-    tool = toolCamera.child("up");
-    Point up(tool.attribute("x").as_float(), tool.attribute("y").as_float(), tool.attribute("z").as_float());
-
-    tool = toolCamera.child("projection");
-    double fov = tool.attribute("fov").as_double();
-    double near = tool.attribute("near").as_double();
-    double far = tool.attribute("far").as_double();
-    
-    
-    camera.init(eye, center, up, fov, near, far);
-
-
-
-    pugi::xml_node toolGroup = toolWorld.child("group");
-
-    for (pugi::xml_node toolModel: toolGroup.child("models").children("model")) {
-        queueModels.push_back(toolModel.attribute("file").as_string());
-    }
-
-    
-    long totalVertices;
+    long total_vertices;
     float x, y, z;
 
-    for (const auto &file : queueModels) {
-        if (!models.contains(file)) {
+    for (const auto& file : models) {
+        if (!models_vertices.contains(file)) {
             std::ifstream stream(file);
-            stream >> totalVertices;
+            stream >> total_vertices;
 
-            models.emplace((std::make_pair(file, Model(file, 5))));
-            Model &model = models.at(file);
+            models_vertices.emplace(file, std::vector<Point>());
+            std::vector<Point>& vertices = models_vertices.at(file);
+            vertices.reserve(total_vertices);
 
             while (stream >> x >> y >> z)
-                model.vertices.push_back(Point(x, y, z));
+                vertices.emplace_back(x, y, z);
         }
     }
+
+    return true;
+}
+
+
+int main(int argc, char ** argv) {
+
+    if (argc != 2 || !initContext(argv[1]))
+        return -1;
 
 
     // init GLUT and the window

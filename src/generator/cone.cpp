@@ -4,6 +4,7 @@
 #include <vector>
 #include <iostream>
 
+#define _USE_MATH_DEFINES
 #include "math.h"
 
 Cone::Cone(float rad, float hei, float sli, float sta){

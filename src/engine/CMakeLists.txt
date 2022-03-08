@@ -5,7 +5,7 @@ include_directories(${OpenGL_INCLUDE_DIRS})
 link_directories(${OpenGL_LIBRARY_DIRS})
 add_definitions(${OpenGL_DEFINITIONS})
 
-add_executable(engine main.cpp camera.cpp model.cpp)
+add_executable(engine main.cpp camera.cpp model.cpp parsing.cpp)
 
 
 if(NOT OPENGL_FOUND)

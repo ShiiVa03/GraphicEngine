@@ -1,10 +1,7 @@
 #include "model.hpp"
-#include "../utils/point.hpp"
 #include <string>
-#include <vector>
 
-Model::Model(std::string file, long totalVertices){
+Model::Model(std::string file){
     this->file = file;
-    this->vertices.reserve(totalVertices);
 };
 
