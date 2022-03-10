@@ -1,6 +1,6 @@
-#include "point.hpp"
+#include "spherical_coord.hpp"
 #include "vector.hpp"
-#include "spherical_point.hpp"
+#include "point.hpp"
 
 #include <math.h> 
 
@@ -17,7 +17,7 @@ void Point::addVector(Vector vec){
 
 }
 
-Point Point::toCartesian(SphericalPoint sp){
+Point Point::toCartesian(SphericalCoord sp){
     float x = sp.radius * cos(sp.beta) * sin(sp.alpha);
     float y = sp.radius * sin(sp.beta);
     float z = sp.radius * cos(sp.beta) * cos(sp.alpha);
