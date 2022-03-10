@@ -3,7 +3,7 @@
 #include <vector>
 #include <stdexcept>
 
-enum class Transformation transformationStringToEnum(std::string transformation) {
+enum Transformation transformationStringToEnum(std::string transformation) {
 	if (transformation == "translate")
 		return Transformation::TRANSLATION;
 

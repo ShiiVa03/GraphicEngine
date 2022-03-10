@@ -10,13 +10,13 @@
 
 #include <vector>
 
-enum class Transformation {
+enum Transformation {
     TRANSLATION,
     ROTATION,
     SCALE
 };
 
-enum class Transformation transformationStringToEnum(std::string transformation);
+enum Transformation transformationStringToEnum(std::string transformation);
 
 class Group{
     public:

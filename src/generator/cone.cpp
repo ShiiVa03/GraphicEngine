@@ -39,11 +39,11 @@ std::vector<Point> Cone::draw(){
             auto currentRadius = (radius * (height - (j*stepUp)))/height;
             auto upperRadius = (radius * (height - ((j+1)*stepUp)))/height;
             
-            Point lateral1(CylindricalCoord(alpha * i, currentRadius, stepUp * j));
-            Point lateral3(CylindricalCoord(alpha * (i+1), currentRadius, stepUp * j));
+            Point lateral1(CylindricalCoord(alpha * i, stepUp * j, currentRadius));
+            Point lateral3(CylindricalCoord(alpha * (i+1), stepUp * j,  currentRadius));
 
-            Point lateral4(CylindricalCoord(alpha * i, upperRadius, stepUp * (j+1)));
-            Point lateral2(CylindricalCoord(alpha * (i+1), upperRadius, stepUp * (j+1)));
+            Point lateral4(CylindricalCoord(alpha * i, stepUp * (j+1), upperRadius));
+            Point lateral2(CylindricalCoord(alpha * (i+1), stepUp * (j+1), upperRadius));
 
             if(j == (stacks - 1)){
                 points.push_back(lateral1);

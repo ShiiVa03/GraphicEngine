@@ -22,7 +22,7 @@ void parseGroup(Group &parent_group, pugi::xml_node toolParentGroup) {
     }
 
     for (pugi::xml_node tool : toolParentGroup.child("transform").children()) {
-        enum class Transformation transformation = transformationStringToEnum(tool.name());
+        enum Transformation transformation = transformationStringToEnum(tool.name());
 
         switch (transformation)
         {
