@@ -11,9 +11,9 @@ enum class Transformation transformationStringToEnum(std::string transformation)
 		return Transformation::ROTATION;
 
 	if (transformation == "scale")
-		return Transformation::SCALATION;
+		return Transformation::SCALE;
 
-	throw std::invalid_argument("received negative value");
+	throw std::invalid_argument("Unknown Transformation");
 }
 
 Group::Group(){
@@ -29,10 +29,10 @@ void Group::add_rotation(Rotation rotation) {
 
 	this->ordered_transformations.push_back(Transformation::ROTATION);
 }
-void Group::add_scalation(Scalation scalation) {
-	this->scalation = scalation;
+void Group::add_scale(Scale scale) {
+	this->scale = scale;
 
-	this->ordered_transformations.push_back(Transformation::SCALATION);
+	this->ordered_transformations.push_back(Transformation::SCALE);
 }
 
 void Group::add_model(Model &model) {

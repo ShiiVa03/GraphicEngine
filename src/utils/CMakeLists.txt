@@ -4,4 +4,5 @@ add_library(utils
     point.cpp
     vector.cpp
     spherical_coord.cpp
+    cylindrical_coord.cpp
 )

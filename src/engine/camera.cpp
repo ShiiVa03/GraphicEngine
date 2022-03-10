@@ -4,7 +4,7 @@
 Camera::Camera() {
 }
 
-void Camera::init(Point eye, Point center, Point up, double fov, double near, double far){
+void Camera::init(Point eye, Point center, Point up, double fov, double near, double far) {
     this->eye = eye;
     this->center = center;
     this->up = up;

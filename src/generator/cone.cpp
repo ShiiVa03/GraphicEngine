@@ -1,5 +1,7 @@
 #include "../utils/vector.hpp"
 #include "../utils/point.hpp"
+#include "../utils/cylindrical_coord.hpp"
+#include "../utils/spherical_coord.hpp"
 #include "cone.hpp"
 
 #include <vector>
@@ -24,8 +26,8 @@ std::vector<Point> Cone::draw(){
     std::vector<Point> points;
 
     for(int i = 0; i < slices; ++i){
-        Point base1 = base1.toCartesian(SphericalCoord(alpha * i, 0.0f, radius));
-        Point base2 = base2.toCartesian(SphericalCoord(alpha * (i+1), 0.0f, radius));
+        Point base1(SphericalCoord(alpha * i, 0.0f, radius));
+        Point base2(SphericalCoord(alpha * (i+1), 0.0f, radius));
     
         points.push_back(base1);
         points.push_back(center);
@@ -37,11 +39,11 @@ std::vector<Point> Cone::draw(){
             auto currentRadius = (radius * (height - (j*stepUp)))/height;
             auto upperRadius = (radius * (height - ((j+1)*stepUp)))/height;
             
-            Point lateral1 = lateral1.toCartesianNoBeta(alpha * i, currentRadius, stepUp * j);
-            Point lateral3 = lateral3.toCartesianNoBeta(alpha * (i+1), currentRadius, stepUp * j);
+            Point lateral1(CylindricalCoord(alpha * i, currentRadius, stepUp * j));
+            Point lateral3(CylindricalCoord(alpha * (i+1), currentRadius, stepUp * j));
 
-            Point lateral4 = lateral4.toCartesianNoBeta(alpha * i, upperRadius, stepUp * (j+1));
-            Point lateral2 = lateral2.toCartesianNoBeta(alpha * (i+1), upperRadius, stepUp * (j+1));
+            Point lateral4(CylindricalCoord(alpha * i, upperRadius, stepUp * (j+1)));
+            Point lateral2(CylindricalCoord(alpha * (i+1), upperRadius, stepUp * (j+1)));
 
             if(j == (stacks - 1)){
                 points.push_back(lateral1);

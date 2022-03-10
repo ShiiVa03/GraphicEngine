@@ -6,6 +6,7 @@
 
 #include <vector>
 #include <iostream>
+#include <stdexcept>
 
 void parseModel(Model &model, pugi::xml_node toolModel) {
     model.init(toolModel.attribute("file").as_string());
@@ -31,8 +32,8 @@ void parseGroup(Group &parent_group, pugi::xml_node toolParentGroup) {
         case Transformation::ROTATION:
             parent_group.add_rotation(Rotation(tool.attribute("angle").as_float(), tool.attribute("axisX").as_float(), tool.attribute("axisY").as_float(), tool.attribute("axisZ").as_float()));
             break;
-        case Transformation::SCALATION:
-            parent_group.add_scalation(Scalation(tool.attribute("X").as_float(), tool.attribute("Y").as_float(), tool.attribute("Z").as_float()));
+        case Transformation::SCALE:
+            parent_group.add_scale(Scale(tool.attribute("X").as_float(), tool.attribute("Y").as_float(), tool.attribute("Z").as_float()));
             break;
         }
     }
@@ -73,18 +74,27 @@ bool parse(char * filename, Camera &camera, Group& group) {
     pugi::xml_parse_result result = doc.load_file(filename);
 
     if (!result) {
-        std::cout << "ERROR" << std::endl;
         return false;
     }
 
     pugi::xml_node toolWorld = doc.child("world");
 
+    if (!toolWorld)
+        throw std::invalid_argument("World not found in .xml");
+
+
     pugi::xml_node toolCamera = toolWorld.child("camera");
+
+    if (!toolCamera)
+        throw std::invalid_argument("Camera not found in .xml's World");
 
     parseCamera(camera, toolCamera);
 
 
     pugi::xml_node toolGroup = toolWorld.child("group");
+
+    if (!toolGroup)
+        throw std::invalid_argument("Group not found in .xml's World");
 
     parseGroup(group, toolGroup);
     std::cout << group.models.size() << std::endl;

@@ -1,6 +1,8 @@
-#include "spherical_coord.hpp"
-#include "vector.hpp"
 #include "point.hpp"
+#include "spherical_coord.hpp"
+#include "cylindrical_coord.hpp"
+#include "vector.hpp"
+
 
 #include <math.h> 
 
@@ -10,27 +12,22 @@ Point::Point(float a, float b, float c){
     z = c;
 };
 
+Point::Point(SphericalCoord sc) {
+    x = sc.radius * cosf(sc.beta) * sinf(sc.alpha);
+    y = sc.radius * sinf(sc.beta);
+    z = sc.radius * cosf(sc.beta) * cosf(sc.alpha);
+}
+
+Point::Point(CylindricalCoord cc) {
+    x = cc.radius * sinf(cc.alpha);
+    y = cc.height;
+    z = cc.radius * cosf(cc.alpha);
+}
+
+
 void Point::addVector(Vector vec){
     x += vec.vx;
     y += vec.vy;
     z += vec.vz;
-
-}
-
-Point Point::toCartesian(SphericalCoord sp){
-    float x = sp.radius * cos(sp.beta) * sin(sp.alpha);
-    float y = sp.radius * sin(sp.beta);
-    float z = sp.radius * cos(sp.beta) * cos(sp.alpha);
-
-    return Point(x,y,z);
-
-}
-
-Point Point::toCartesianNoBeta(float alpha, float radius, float height){
-    float x = radius * sin(alpha);
-    float y = height;
-    float z = radius * cos(alpha);
-
-    return Point(x,y,z);
 
 }

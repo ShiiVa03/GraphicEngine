@@ -1,4 +1,5 @@
 #include "../utils/point.hpp"
+#include "../utils/spherical_coord.hpp"
 #include "sphere.hpp"
 
 #include <vector>
@@ -26,8 +27,8 @@ std::vector<Point> Sphere::draw(){
     //draw base and then proceed to "lateral"
     for(int i = 0; i < slices; ++i){
         //top base only need one triangle since the other would be in the same points
-        Point p1 = p1.toCartesian(SphericalCoord(alpha * i, M_PI / 2 - beta, radius));
-        Point p2 = p2.toCartesian(SphericalCoord(alpha * (i + 1), M_PI / 2 - beta, radius));
+        Point p1(SphericalCoord(alpha * i, M_PI / 2 - beta, radius));
+        Point p2(SphericalCoord(alpha * (i + 1), M_PI / 2 - beta, radius));
 
         points.push_back(p1);
         points.push_back(p2);
@@ -35,10 +36,10 @@ std::vector<Point> Sphere::draw(){
 
         for(int j = 1; j < stacks; ++j){
             //starting up-down
-            Point pointDownL = pointDownL.toCartesian(SphericalCoord(alpha * i, M_PI / 2 - beta * (j + 1), radius));
-            Point pointDownR = pointDownR.toCartesian(SphericalCoord(alpha * (i + 1), M_PI / 2 - beta * (j + 1), radius));
-            Point pointL = pointL.toCartesian(SphericalCoord(alpha * i, M_PI / 2 - beta * j, radius));
-            Point pointR = pointR.toCartesian(SphericalCoord(alpha * (i + 1), M_PI / 2 - beta * j, radius));
+            Point pointDownL(SphericalCoord(alpha * i, M_PI / 2 - beta * (j + 1), radius));
+            Point pointDownR(SphericalCoord(alpha * (i + 1), M_PI / 2 - beta * (j + 1), radius));
+            Point pointL(SphericalCoord(alpha * i, M_PI / 2 - beta * j, radius));
+            Point pointR(SphericalCoord(alpha * (i + 1), M_PI / 2 - beta * j, radius));
             
             //last stack is bottom base
             if(j == stacks - 1){
