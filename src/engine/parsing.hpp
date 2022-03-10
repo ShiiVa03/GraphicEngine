@@ -5,7 +5,8 @@
 #include <string>
 
 #include "camera.hpp"
+#include "group.hpp"
 
-bool parse(char * filename, Camera &camera, std::vector<std::string>& models);
+bool parse(char * filename, Camera &camera, Group& group);
 
 #endif

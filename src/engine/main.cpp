@@ -3,6 +3,7 @@
 #include "parsing.hpp"
 #include "camera.hpp"
 #include "model.hpp"
+#include "group.hpp"
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -16,7 +17,7 @@
 #endif
 
 static Camera camera;
-static std::vector<std::string> models;
+static Group main_group;
 static std::unordered_map<std::string, std::vector<Point>> models_vertices;
 
 bool entered = false;
@@ -46,6 +47,44 @@ void changeSize(int w, int h) {
     glMatrixMode(GL_MODELVIEW);
 }
 
+void renderGroup(const Group& group) {
+    for (auto const& transformation : group.ordered_transformations) {
+        switch (transformation)
+        {
+        case Transformation::TRANSLATION:
+            glTranslatef(group.translation.x, group.translation.y, group.translation.z);
+            break;
+        case Transformation::ROTATION:
+            glRotatef(group.rotation.alpha, group.rotation.axis_x, group.rotation.axis_y, group.rotation.axis_z);
+            break;
+        case Transformation::SCALATION:
+            glScalef(group.scalation.x, group.scalation.y, group.scalation.z);
+            break;
+        }
+    }
+
+
+    glBegin(GL_TRIANGLES);
+    for (const auto& model : group.models) {
+        std::vector<Point>& vertices = models_vertices.at(model.file);
+
+        for (const auto& point : vertices) {
+            if (!entered) {
+                std::cout << point.x << "|" << point.y << "|" << point.z << std::endl;
+            }
+            glVertex3f(point.x, point.y, point.z);
+        }
+    }
+    glEnd();
+
+
+    for (auto const& sub_group : group.groups) {
+        glPushMatrix();
+        renderGroup(sub_group);
+        glPopMatrix();
+    }
+
+}
 
 void renderScene(void) {
 
@@ -85,18 +124,7 @@ void renderScene(void) {
 */
     glColor3f(1.0f, 1.0f, 1.0f);
 
-    glBegin(GL_TRIANGLES);
-    for (const auto &fileName: models) {
-        std::vector<Point> &vertices = models_vertices.at(fileName);
-
-        for (const auto& point : vertices) {
-            if (!entered) {
-                std::cout << point.x << "|" << point.y << "|" << point.z << std::endl;
-            }
-            glVertex3f(point.x, point.y, point.z);
-        }
-    }
-    glEnd();
+    renderGroup(main_group);
     entered = true;
 
     // End of frame
@@ -105,19 +133,19 @@ void renderScene(void) {
 
 bool initContext(char * filename) {
     
-    if (!parse(filename, camera, models))
+    if (!parse(filename, camera, main_group))
         return false;
 
     long total_vertices;
     float x, y, z;
 
-    for (const auto& file : models) {
-        if (!models_vertices.contains(file)) {
-            std::ifstream stream(file);
+    for (const auto& model : main_group.models) {
+        if (!models_vertices.contains(model.file)) {
+            std::ifstream stream(model.file);
             stream >> total_vertices;
 
-            models_vertices.emplace(file, std::vector<Point>());
-            std::vector<Point>& vertices = models_vertices.at(file);
+            models_vertices.emplace(model.file, std::vector<Point>());
+            std::vector<Point>& vertices = models_vertices.at(model.file);
             vertices.reserve(total_vertices);
 
             while (stream >> x >> y >> z)

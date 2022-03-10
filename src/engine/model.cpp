@@ -1,7 +1,11 @@
 #include "model.hpp"
 #include <string>
 
-Model::Model(std::string file){
+Model::Model() {
+
+}
+
+void Model::init(std::string file){
     this->file = file;
 };
 

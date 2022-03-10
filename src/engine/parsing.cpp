@@ -2,23 +2,52 @@
 #include "../utils/point.hpp"
 #include "camera.hpp"
 #include "model.hpp"
+#include "group.hpp"
 
 #include <vector>
 #include <iostream>
 
-bool parse(char * filename, Camera &camera, std::vector<std::string>& models) {
-    pugi::xml_document doc;
-    pugi::xml_parse_result result = doc.load_file(filename);
+void parseModel(Model &model, pugi::xml_node toolModel) {
+    model.init(toolModel.attribute("file").as_string());
+}
 
-    if (!result) {
-        std::cout << "ERROR" << std::endl;
-        return false;
+void parseGroup(Group &parent_group, pugi::xml_node toolParentGroup) {
+
+    for (pugi::xml_node toolModel : toolParentGroup.child("models").children("model")) {
+        Model model;
+
+        parseModel(model, toolModel);
+        parent_group.add_model(model);
     }
 
-    pugi::xml_node toolWorld = doc.child("world");
+    for (pugi::xml_node tool : toolParentGroup.child("transform").children()) {
+        enum class Transformation transformation = transformationStringToEnum(tool.name());
 
-    pugi::xml_node toolCamera = toolWorld.child("camera");
+        switch (transformation)
+        {
+        case Transformation::TRANSLATION:
+            parent_group.add_translation(Translation(tool.attribute("X").as_float(), tool.attribute("Y").as_float(), tool.attribute("Z").as_float()));
+            break;
+        case Transformation::ROTATION:
+            parent_group.add_rotation(Rotation(tool.attribute("angle").as_float(), tool.attribute("axisX").as_float(), tool.attribute("axisY").as_float(), tool.attribute("axisZ").as_float()));
+            break;
+        case Transformation::SCALATION:
+            parent_group.add_scalation(Scalation(tool.attribute("X").as_float(), tool.attribute("Y").as_float(), tool.attribute("Z").as_float()));
+            break;
+        }
+    }
 
+
+
+    for (pugi::xml_node toolGroup : toolParentGroup.children("group")) {
+        Group group;
+
+        parseGroup(group, toolGroup);
+        parent_group.add_group(group);
+    }
+}
+
+void parseCamera(Camera& camera, pugi::xml_node toolCamera) {
     pugi::xml_node tool;
 
     tool = toolCamera.child("position");
@@ -37,14 +66,28 @@ bool parse(char * filename, Camera &camera, std::vector<std::string>& models) {
 
 
     camera.init(eye, center, up, fov, near, far);
+}
 
+bool parse(char * filename, Camera &camera, Group& group) {
+    pugi::xml_document doc;
+    pugi::xml_parse_result result = doc.load_file(filename);
+
+    if (!result) {
+        std::cout << "ERROR" << std::endl;
+        return false;
+    }
+
+    pugi::xml_node toolWorld = doc.child("world");
+
+    pugi::xml_node toolCamera = toolWorld.child("camera");
+
+    parseCamera(camera, toolCamera);
 
 
     pugi::xml_node toolGroup = toolWorld.child("group");
 
-    for (pugi::xml_node toolModel : toolGroup.child("models").children("model")) {
-        models.push_back(toolModel.attribute("file").as_string());
-    }
+    parseGroup(group, toolGroup);
+    std::cout << group.models.size() << std::endl;
 
     return true;
 }

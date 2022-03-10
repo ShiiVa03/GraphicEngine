@@ -3,10 +3,15 @@
 
 #include <string>
 
+
 class Model{
     public:
         std::string file;
-        Model(std::string file);
+
+
+        Model();
+
+        void init(std::string file);
         
 };
 
