@@ -12,7 +12,7 @@ enum Transformation transformationStringToEnum(std::string transformation) {
 
 	if (transformation == "scale")
 		return Transformation::SCALE;
-
+	
 	throw std::invalid_argument("Unknown Transformation");
 }
 

@@ -27,13 +27,13 @@ void parseGroup(Group &parent_group, pugi::xml_node toolParentGroup) {
         switch (transformation)
         {
         case Transformation::TRANSLATION:
-            parent_group.add_translation(Translation(tool.attribute("X").as_float(), tool.attribute("Y").as_float(), tool.attribute("Z").as_float()));
+            parent_group.add_translation(Translation(tool.attribute("x").as_float(), tool.attribute("y").as_float(), tool.attribute("z").as_float()));
             break;
         case Transformation::ROTATION:
-            parent_group.add_rotation(Rotation(tool.attribute("angle").as_float(), tool.attribute("axisX").as_float(), tool.attribute("axisY").as_float(), tool.attribute("axisZ").as_float()));
+            parent_group.add_rotation(Rotation(tool.attribute("angle").as_float(), tool.attribute("x").as_float(), tool.attribute("y").as_float(), tool.attribute("z").as_float()));
             break;
         case Transformation::SCALE:
-            parent_group.add_scale(Scale(tool.attribute("X").as_float(), tool.attribute("Y").as_float(), tool.attribute("Z").as_float()));
+            parent_group.add_scale(Scale(tool.attribute("x").as_float(), tool.attribute("y").as_float(), tool.attribute("z").as_float()));
             break;
         }
     }
@@ -97,7 +97,6 @@ bool parse(char * filename, Camera &camera, Group& group) {
         throw std::invalid_argument("Group not found in .xml's World");
 
     parseGroup(group, toolGroup);
-    std::cout << group.models.size() << std::endl;
 
     return true;
 }

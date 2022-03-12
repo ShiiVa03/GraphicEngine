@@ -26,7 +26,7 @@ static std::unordered_map<std::string, std::vector<Point>> models_vertices;
 
 static GLenum current_mode = GL_FILL;
 
-bool entered = false;
+bool show_axis = true;
 
 void changeSize(int w, int h) {
 
@@ -74,12 +74,9 @@ void renderGroup(const Group& group) {
     for (const auto& model : group.models) {
         std::vector<Point>& vertices = models_vertices.at(model.file);
 
-        for (const auto& point : vertices) {
-            if (!entered) {
-                std::cout << point.x << "|" << point.y << "|" << point.z << std::endl;
-            }
+        for (const auto& point : vertices)
             glVertex3f(point.x, point.y, point.z);
-        }
+
     }
     glEnd();
 
@@ -107,48 +104,43 @@ void renderScene(void) {
     glLoadIdentity();
     updateCamera();
 
-    if (!entered) {
-        std::cout << camera.eye.x << "|" << camera.eye.y << "|" << camera.eye.z << "|" << camera.center.x << "|" << camera.center.y << "|" << camera.center.z << camera.up.x << "|" << camera.up.y << "|" << camera.up.z << std::endl;
-        std::cout << camera.fov << "|" << camera.near << "|" << camera.far << std::endl;
+
+    if (show_axis) {
+        glBegin(GL_LINES);
+        // X axis in red
+        glColor3f(1.0f, 0.0f, 0.0f);
+        glVertex3f(-100.0f, 0.0f, 0.0f);
+        glVertex3f(100.0f, 0.0f, 0.0f);
+        // Y Axis in Green
+        glColor3f(0.0f, 1.0f, 0.0f);
+        glVertex3f(0.0f, -100.0f, 0.0f);
+        glVertex3f(0.0f, 100.0f, 0.0f);
+        // Z Axis in Blue
+        glColor3f(0.0f, 0.0f, 1.0f);
+        glVertex3f(0.0f, 0.0f, -100.0f);
+        glVertex3f(0.0f, 0.0f, 100.0f);
+        glEnd();
     }
-
-
-
-    glBegin(GL_LINES);
-    // X axis in red
-    glColor3f(1.0f, 0.0f, 0.0f);
-    glVertex3f(-100.0f, 0.0f, 0.0f);
-    glVertex3f(100.0f, 0.0f, 0.0f);
-    // Y Axis in Green
-    glColor3f(0.0f, 1.0f, 0.0f);
-    glVertex3f(0.0f, -100.0f, 0.0f);
-    glVertex3f(0.0f, 100.0f, 0.0f);
-    // Z Axis in Blue
-    glColor3f(0.0f, 0.0f, 1.0f);
-    glVertex3f(0.0f, 0.0f, -100.0f);
-    glVertex3f(0.0f, 0.0f, 100.0f);
-    glEnd();
 
     glColor3f(1.0f, 1.0f, 1.0f);
 
     renderGroup(main_group);
-    entered = true;
 
     // End of frame
     glutSwapBuffers();
 }
 
-bool initContext(char * filename) {
-    
-    if (!parse(filename, camera, main_group))
-        return false;
-
+void loadModels(const Group& group) {
     long total_vertices;
     float x, y, z;
 
-    for (const auto& model : main_group.models) {
+    for (const auto& model : group.models) {
         if (!models_vertices.contains(model.file)) {
             std::ifstream stream(model.file);
+
+            if (!stream)
+                throw std::invalid_argument(model.file + " can't be opened");
+
             stream >> total_vertices;
 
             models_vertices.emplace(model.file, std::vector<Point>());
@@ -160,6 +152,17 @@ bool initContext(char * filename) {
         }
     }
 
+    for (const auto& sub_group : group.groups)
+        loadModels(sub_group);
+}
+
+bool initContext(char * filename) {
+    
+    if (!parse(filename, camera, main_group))
+        return false;
+
+    loadModels(main_group);
+
     return true;
 }
 
@@ -169,7 +172,6 @@ bool initContext(char * filename) {
 
 void specialKeysFunc(int key_code, int x, int y) {
     SphericalCoord eye_camera = SphericalCoord(camera.eye);
-    std::cout <<"BEGIN-> X: "<<camera.eye.x << " |Y: "<< camera.eye.y <<" | Z: " << camera.eye.z << " | Alpha : " << eye_camera.alpha << " | Beta: " << eye_camera.beta << " | Radius: " << eye_camera.radius << std::endl;
     
     float alpha_var = M_PI_4 / 20.0f;
     float beta_var = M_PI_4 / 20.0f;
@@ -202,8 +204,7 @@ void specialKeysFunc(int key_code, int x, int y) {
     eye_camera.beta = fminf(fmaxf(eye_camera.beta, -M_PI_2 + beta_var), M_PI_2 - beta_var);
 
     camera.eye = Point(eye_camera);
-    std::cout << "END-> X: " << camera.eye.x << " |Y: " << camera.eye.y << " | Z: " << camera.eye.z << " | Alpha : " << eye_camera.alpha << " | Beta: " << eye_camera.beta << " | Radius: " << eye_camera.radius << std::endl;
-
+    
     updateCamera();
 
     glutPostRedisplay();
@@ -220,6 +221,9 @@ void keyboardKeysFunc(unsigned char key, int x, int y) {
         }
 
         glPolygonMode(GL_FRONT, current_mode);
+    }
+    else if (key == 'x') {
+        show_axis = !show_axis;
     }
 
 
@@ -273,7 +277,4 @@ int main(int argc, char ** argv) {
     glutMainLoop();
 
     return 1;
-
-
-    std::cout << "boas" << std::endl;
 }
