@@ -321,6 +321,9 @@ void mouseFunc(int x, int y) {
     center_sc.alpha -= alpha;
     center_sc.beta -= beta;
 
+    if (center_sc.beta >= M_PI_2 || center_sc.beta <= -M_PI_2)
+        center_sc.beta += beta;
+
     camera.center = Point(center_sc);
     vec_recenter.multiply(-1);
     camera.center.addVector(vec_recenter);
