@@ -10,6 +10,7 @@
 #include <string>
 #include <unordered_map>
 #include <stdexcept>
+#include "../utils/vector.hpp"
 
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -27,6 +28,7 @@ static std::unordered_map<std::string, std::vector<Point>> models_vertices;
 static GLenum current_mode = GL_FILL;
 
 bool show_axis = true;
+bool show_aim = true;
 
 void changeSize(int w, int h) {
 
@@ -92,7 +94,7 @@ void renderGroup(const Group& group) {
 void updateCamera(void) {
     gluLookAt(camera.eye.x, camera.eye.y, camera.eye.z,
         camera.center.x, camera.center.y, camera.center.z,
-        camera.up.x, camera.up.y, camera.up.z);
+        camera.up.vx, camera.up.vy, camera.up.vz);
 }
 
 void renderScene(void) {
@@ -120,6 +122,14 @@ void renderScene(void) {
         glVertex3f(0.0f, 0.0f, -100.0f);
         glVertex3f(0.0f, 0.0f, 100.0f);
         glEnd();
+    }
+    if (show_aim) {
+        glColor3f(0.8f, 0.2f, 1.0f);
+        glPushMatrix();
+        Vector vec(Point(), camera.center);
+        glTranslatef(vec.vx, vec.vy, vec.vz);
+        glutSolidSphere(.05, 10, 10);
+        glPopMatrix();
     }
 
     glColor3f(1.0f, 1.0f, 1.0f);
@@ -169,9 +179,80 @@ bool initContext(char * filename) {
 
 // write function to process keyboard events
 
+void clickResumeWindow(int button, int state, int x, int y);
+
+void keyboardKeysFunc(unsigned char key, int x, int y) {
+
+    float step_var = 0.2f;
+    Vector vec(camera.eye, camera.center);
+    vec.normalize();
+
+    switch (key) {
+    case 27:
+        glutMotionFunc(NULL);
+        glutPassiveMotionFunc(NULL);
+        glutSpecialFunc(NULL);
+        glutKeyboardFunc(NULL);
+        glutSetCursor(GLUT_CURSOR_LEFT_ARROW);
+        glutMouseFunc(clickResumeWindow);
+        break;
+
+    case 'z':
+        switch (current_mode) {
+        case GL_FILL: current_mode = GL_LINE; break;
+        case GL_LINE: current_mode = GL_POINT; break;
+        default: current_mode = GL_FILL;
+        }
+
+        glPolygonMode(GL_FRONT, current_mode);
+        break;
+
+    case 'x':
+        show_axis = !show_axis;
+        break;
+
+    case 'c':
+        show_aim = !show_aim;
+        break;
+
+    case 'w':
+        vec.multiply(step_var);
+        camera.eye.addVector(vec);
+        camera.center.addVector(vec);
+        break;
+
+    case 's':
+        vec.multiply(-step_var);
+        camera.eye.addVector(vec);
+        camera.center.addVector(vec);
+        break;
+
+    case 'd':
+        vec.multiply(step_var);
+        vec = vec.cross(camera.up);
+        camera.eye.addVector(vec);
+        camera.center.addVector(vec);
+        break;
+
+    case 'a':
+        vec.multiply(-step_var);
+        vec = vec.cross(camera.up);
+        camera.eye.addVector(vec);
+        camera.center.addVector(vec);
+        break;
+    }
+
+
+    glutPostRedisplay();
+}
 
 void specialKeysFunc(int key_code, int x, int y) {
-    SphericalCoord eye_camera = SphericalCoord(camera.eye);
+    Vector recenter_vec = Vector(camera.center, Point());
+
+    Point camera_eye(camera.eye);
+    camera_eye.addVector(recenter_vec);
+
+    SphericalCoord eye_camera_sc = SphericalCoord(camera_eye);
     
     float alpha_var = M_PI_4 / 20.0f;
     float beta_var = M_PI_4 / 20.0f;
@@ -180,55 +261,105 @@ void specialKeysFunc(int key_code, int x, int y) {
 
     switch (key_code) {
     case GLUT_KEY_UP:
-        if (glutGetModifiers() & GLUT_ACTIVE_CTRL)
-            eye_camera.radius = fmaxf(radius_var, eye_camera.radius - radius_var);
+        if (glutGetModifiers() & GLUT_ACTIVE_CTRL) {
+
+            if (eye_camera_sc.radius > radius_var)
+                eye_camera_sc.radius -= radius_var;
+
+        }
         else {
-            // Beta angle changes perspective if it hits -PI/2 or PI/2. This code avoids that
-            eye_camera.beta = fminf(eye_camera.beta + beta_var, M_PI_2 - beta_var);
+
+                // Beta angle changes perspective if it hits -PI/2 or PI/2. This code avoids that
+            if (eye_camera_sc.beta < M_PI_2 - beta_var)
+                eye_camera_sc.beta += beta_var;
+
         }
         break;
     case GLUT_KEY_DOWN:
         if (glutGetModifiers() & GLUT_ACTIVE_CTRL)
-            eye_camera.radius += radius_var;
+            eye_camera_sc.radius += radius_var;
         else {
             // Beta angle changes perspective if it hits -PI/2 or PI/2. This code avoids that
-            eye_camera.beta = fmaxf(eye_camera.beta - beta_var, -M_PI_2 + beta_var);
+            if (eye_camera_sc.beta > -M_PI_2 + beta_var)
+                eye_camera_sc.beta -= beta_var;
         }
         break;
-    case GLUT_KEY_RIGHT: eye_camera.alpha += alpha_var; break;
-    case GLUT_KEY_LEFT: eye_camera.alpha -= alpha_var; break;
+    case GLUT_KEY_RIGHT: eye_camera_sc.alpha += alpha_var; break;
+    case GLUT_KEY_LEFT: eye_camera_sc.alpha -= alpha_var; break;
     default: return;
     }
 
-    
-    eye_camera.beta = fminf(fmaxf(eye_camera.beta, -M_PI_2 + beta_var), M_PI_2 - beta_var);
+    camera.eye = Point(eye_camera_sc);
 
-    camera.eye = Point(eye_camera);
+    recenter_vec.multiply(-1);
+    camera.eye.addVector(recenter_vec);
     
     updateCamera();
 
     glutPostRedisplay();
 }
 
-void keyboardKeysFunc(unsigned char key, int x, int y) {
+void mouseFunc(int x, int y) {
+    int size_width = glutGet(GLUT_WINDOW_WIDTH);
+    int size_height = glutGet(GLUT_WINDOW_HEIGHT);
+
+    int center_width = size_width / 2;
+    int center_height = size_height / 2;
+
+    float alpha = M_PI_2 * (((float)(x - center_width)) / (float)size_width);
+    float beta = M_PI_2 * (((float)(y - center_height)) / (float)size_height);
 
 
-    if (key == 'z') {
-        switch (current_mode) {
-        case GL_FILL: current_mode = GL_LINE; break;
-        case GL_LINE: current_mode = GL_POINT; break;
-        default: current_mode = GL_FILL;
-        }
 
-        glPolygonMode(GL_FRONT, current_mode);
-    }
-    else if (key == 'x') {
-        show_axis = !show_axis;
-    }
+    Point camera_fake_center = camera.center;
+    Vector vec_recenter(camera.eye, Point());
+    camera_fake_center.addVector(vec_recenter);
 
 
+    SphericalCoord center_sc(camera_fake_center);
+
+    center_sc.alpha -= alpha;
+    center_sc.beta -= beta;
+
+    camera.center = Point(center_sc);
+    vec_recenter.multiply(-1);
+    camera.center.addVector(vec_recenter);
+
+    glutWarpPointer(center_width, center_height);
     glutPostRedisplay();
 }
+
+
+void updateInputCallbacks(void) {
+    // put here the registration of the keyboard callbacks
+    glutSpecialFunc(specialKeysFunc);
+    glutKeyboardFunc(keyboardKeysFunc);
+
+    // put here the registration of the mouse callbacks
+    glutMotionFunc(mouseFunc);
+    glutPassiveMotionFunc(mouseFunc);
+
+
+    //  OpenGL settings
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+
+    // Remove mouse cursor
+    glutSetCursor(GLUT_CURSOR_NONE);
+}
+
+void clickResumeWindow(int button, int state, int x, int y) {
+    // Save the left button state
+    if (button == GLUT_LEFT_BUTTON) {
+        glutWarpPointer(glutGet(GLUT_WINDOW_WIDTH) / 2, glutGet(GLUT_WINDOW_HEIGHT) / 2);
+        updateInputCallbacks();
+        glutMouseFunc(NULL);
+    }
+}
+
+
+
+
 
 
 int main(int argc, char ** argv) {
@@ -264,14 +395,7 @@ int main(int argc, char ** argv) {
     glPolygonMode(GL_FRONT, GL_FILL);
 
 
-    // put here the registration of the keyboard callbacks
-    glutSpecialFunc(specialKeysFunc);
-    glutKeyboardFunc(keyboardKeysFunc);
-
-
-    //  OpenGL settings
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
+    updateInputCallbacks();
 
     // enter GLUT's main cycle
     glutMainLoop();

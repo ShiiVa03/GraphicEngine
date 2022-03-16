@@ -1,10 +1,10 @@
 #include "point.hpp"
 #include "spherical_coord.hpp"
 #include "cylindrical_coord.hpp"
-#include "vector.hpp"
 
 
 #include <math.h> 
+
 
 Point::Point(float a, float b, float c){
     x = a;
@@ -25,7 +25,7 @@ Point::Point(CylindricalCoord cc) {
 }
 
 
-void Point::addVector(Vector vec){
+void Point::addVector(Vector vec) {
     x += vec.vx;
     y += vec.vy;
     z += vec.vz;

@@ -58,7 +58,7 @@ void parseCamera(Camera& camera, pugi::xml_node toolCamera) {
     Point center(tool.attribute("x").as_float(), tool.attribute("y").as_float(), tool.attribute("z").as_float());
 
     tool = toolCamera.child("up");
-    Point up(tool.attribute("x").as_float(), tool.attribute("y").as_float(), tool.attribute("z").as_float());
+    Vector up(tool.attribute("x").as_float(), tool.attribute("y").as_float(), tool.attribute("z").as_float());
 
     tool = toolCamera.child("projection");
     double fov = tool.attribute("fov").as_double();
