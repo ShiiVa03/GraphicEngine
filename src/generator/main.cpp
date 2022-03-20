@@ -1,6 +1,7 @@
 #include "../utils/point.hpp"
 #include "sphere.hpp"
 #include "plane.hpp"
+#include "torus.hpp"
 #include "cone.hpp"
 #include "box.hpp"
 
@@ -85,7 +86,25 @@ int main(int argc, char **argv) {
             std::cout << "Sphere necessita de 4 argumentos" << std::endl;
         }
 
-    }else{
+    }
+    else if (!figure.compare("torus")) {
+        if (argc == 7) {
+
+            float radius_outer = atof(argv[2]);
+            float radius_inner = atof(argv[3]);
+            float slices = atof(argv[4]);
+            float stacks = atof(argv[5]);
+            file = argv[6];
+
+            Torus torus(radius_outer, radius_inner, slices, stacks);
+            points = torus.draw();
+        }
+        else {
+            std::cout << "Torus necessita de 5 argumentos" << std::endl;
+        }
+
+    }
+    else{
         std::cout << "Comando nao disponivel" << std::endl;
     }
     
