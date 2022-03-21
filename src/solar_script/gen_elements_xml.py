@@ -53,21 +53,24 @@ class GenElementsXML:
 
 
     def _generate_group(self, group: ET.ElementTree, element: Element):
-        transformations = ET.SubElement(group, "transform")
+        if element.transformations:
+            transformations = ET.SubElement(group, "transform")
+            
+
+            for transformation in element.transformations:
+                match transformation.__class__.__name__:
+                    case "Translation":
+                        ET.SubElement(transformations, "translate", x=transformation.x, y=transformation.y, z=transformation.z)
+                    case "Rotation":
+                        ET.SubElement(transformations, "rotate", angle=transformation.angle, x=transformation.axis_x, y=transformation.axis_y, z=transformation.axis_z)
+                    case "Scale":
+                        ET.SubElement(transformations, "scale", x=transformation.x, y=transformation.y, z=transformation.z)
+
+
         models = ET.SubElement(group, "models")
-
-        for transformation in element.transformations:
-            match transformation.__class__.__name__:
-                case "Translation":
-                    ET.SubElement(transformations, "translate", x=transformation.x, y=transformation.y, z=transformation.z)
-                case "Rotation":
-                    ET.SubElement(transformations, "rotate", angle=transformation.angle, x=transformation.axis_x, y=transformation.axis_y, z=transformation.axis_z)
-                case "Scale":
-                    ET.SubElement(transformations, "scale", x=transformation.x, y=transformation.y, z=transformation.z)
-
-
         ET.SubElement(models, "model", file=element.file)
 
+        
         for sub_element in element.elements:
             sub_group = ET.SubElement(group, "group")
             self._generate_group(sub_group, sub_element)

@@ -63,16 +63,18 @@ jupiter = Element("sphere.3d", transformations=transformations)
 
 
 #### SATURN ####
+torus = Element("torus.3d")
+
 transformations = [
-    Translation(str(24 * U), "0", "0"),
+    Translation(str(25 * U), "0", "0"),
     Scale(str(2 * U), str(2 * U), str(2 * U))
 ]
-saturn = Element("sphere.3d", transformations=transformations)
+saturn = Element("sphere.3d", elements=[torus], transformations=transformations)
 
 
 #### URANUS ####
 transformations = [
-    Translation(str(28 * U), "0", "0"),
+    Translation(str(31 * U), "0", "0"),
     Scale(str(1.6 * U), str(1.6 * U), str(1.6 * U))
 ]
 uranus = Element("sphere.3d", transformations=transformations)
@@ -80,7 +82,7 @@ uranus = Element("sphere.3d", transformations=transformations)
 
 #### NEPTUNE ####
 transformations = [
-    Translation(str(32 * U), "0", "0"),
+    Translation(str(35 * U), "0", "0"),
     Scale(str(1.5 * U), str(1.5 * U), str(1.5 * U))
 ]
 neptune = Element("sphere.3d", transformations=transformations)
