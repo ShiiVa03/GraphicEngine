@@ -6,8 +6,8 @@ from transformations import Translation, Rotation, Scale
 file = "solar_system.xml"
 
 camera = Camera(
-    "5", "5", "5",
-    "0", "0", "0",
+    "0", "2", "60",
+    "0", "2", "0",
     "0", "1", "0",
     "60", "1", "1000"
 )
