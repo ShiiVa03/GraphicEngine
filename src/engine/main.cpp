@@ -345,11 +345,6 @@ void updateInputCallbacks(void) {
     glutMotionFunc(mouseFunc);
     glutPassiveMotionFunc(mouseFunc);
 
-
-    //  OpenGL settings
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
-
     // Remove mouse cursor
     glutSetCursor(GLUT_CURSOR_NONE);
 }
@@ -402,6 +397,10 @@ int main(int argc, char ** argv) {
 
 
     updateInputCallbacks();
+    
+    //  OpenGL settings
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
 
     // enter GLUT's main cycle
     glutMainLoop();
