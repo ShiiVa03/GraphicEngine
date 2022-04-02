@@ -306,6 +306,9 @@ void mouseFunc(int x, int y) {
     int center_width = size_width / 2;
     int center_height = size_height / 2;
 
+    if (x == center_width && y == center_height)
+        return;
+
     float alpha = M_PI_2 * (((float)(x - center_width)) / (float)size_width);
     float beta = M_PI_2 * (((float)(y - center_height)) / (float)size_height);
 
