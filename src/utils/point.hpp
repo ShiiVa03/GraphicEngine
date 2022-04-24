@@ -12,6 +12,7 @@ class Point{
         Point(SphericalCoord sc);
         Point(CylindricalCoord cc);
         void addVector(Vector vec);
+        void Point::addPoint(Point p);
 };
 
 #endif

@@ -31,3 +31,9 @@ void Point::addVector(Vector vec) {
     z += vec.vz;
 
 }
+
+void Point::addPoint(Point p){
+    x += p.x;
+    y += p.y;
+    z += p.z;
+}
