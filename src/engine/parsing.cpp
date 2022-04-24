@@ -23,14 +23,27 @@ void parseGroup(Group &parent_group, pugi::xml_node toolParentGroup) {
 
     for (pugi::xml_node tool : toolParentGroup.child("transform").children()) {
         enum Transformation transformation = transformationStringToEnum(tool.name());
+        pugi::xml_attribute  time_attr;
+        
 
         switch (transformation)
         {
         case Transformation::TRANSLATION:
-            parent_group.add_translation(Translation(tool.attribute("x").as_float(), tool.attribute("y").as_float(), tool.attribute("z").as_float()));
+            time_attr = tool.attribute("time");
+
+            if (time_attr.empty())
+                parent_group.add_translation(Translation(tool.attribute("x").as_float(), tool.attribute("y").as_float(), tool.attribute("z").as_float()));
+            else {
+                std::vector<Point> points;
+                for (pugi::xml_node toolPoint : tool.children("point")) {
+                    points.emplace_back(Point(toolPoint.attribute("x").as_float(), toolPoint.attribute("y").as_float(), toolPoint.attribute("z").as_float()));
+                }
+
+                parent_group.add_translation(Translation(time_attr.as_float(), tool.attribute("align").as_bool(), points));
+            }
             break;
         case Transformation::ROTATION:
-            parent_group.add_rotation(Rotation(tool.attribute("angle").as_float(), tool.attribute("x").as_float(), tool.attribute("y").as_float(), tool.attribute("z").as_float()));
+            parent_group.add_rotation(Rotation(tool.attribute("time").as_float(), tool.attribute("angle").as_float(), tool.attribute("x").as_float(), tool.attribute("y").as_float(), tool.attribute("z").as_float()));
             break;
         case Transformation::SCALE:
             parent_group.add_scale(Scale(tool.attribute("x").as_float(), tool.attribute("y").as_float(), tool.attribute("z").as_float()));
