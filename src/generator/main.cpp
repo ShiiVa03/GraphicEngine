@@ -1,4 +1,5 @@
 #include "../utils/point.hpp"
+#include "bezierpatches.hpp"
 #include "sphere.hpp"
 #include "plane.hpp"
 #include "torus.hpp"
@@ -104,7 +105,23 @@ int main(int argc, char **argv) {
         }
 
     }
-    else{
+    else if(!figure.compare("bezier")){
+        if(argc == 5){
+
+            char * filein = argv[2];
+            int level = atoi(argv[3]);
+            file = argv[4];
+
+            Bezier bezier(level);
+            bezier.parse(filein);
+
+            points = bezier.draw();
+
+        }else{
+            std::cout << "Bezier necessita de 3 argumentos" << std::endl;
+        }
+
+    }else{
         std::cout << "Comando nao disponivel" << std::endl;
     }
     
