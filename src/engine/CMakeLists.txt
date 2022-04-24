@@ -5,7 +5,7 @@ include_directories(${OpenGL_INCLUDE_DIRS})
 link_directories(${OpenGL_LIBRARY_DIRS})
 add_definitions(${OpenGL_DEFINITIONS})
 
-add_executable(engine main.cpp camera.cpp model.cpp parsing.cpp group.cpp
+add_executable(engine main.cpp camera.cpp model.cpp parsing.cpp group.cpp catmull_rom.cpp
     transformations/translation.cpp transformations/rotation.cpp transformations/scale.cpp )
 
 

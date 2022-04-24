@@ -1,5 +1,3 @@
-#include "../utils/point.hpp"
-#include "../utils/spherical_coord.hpp"
 #include "parsing.hpp"
 #include "camera.hpp"
 #include "model.hpp"
@@ -10,7 +8,11 @@
 #include <string>
 #include <unordered_map>
 #include <stdexcept>
+
+#include "catmull_rom.hpp"
 #include "../utils/vector.hpp"
+#include "../utils/point.hpp"
+#include "../utils/spherical_coord.hpp"
 
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -56,14 +58,61 @@ void changeSize(int w, int h) {
 }
 
 void renderGroup(const Group& group) {
+    float time;
+    int time_milis;
+
     for (auto const& transformation : group.ordered_transformations) {
         switch (transformation)
         {
         case Transformation::TRANSLATION:
-            glTranslatef(group.translation.x, group.translation.y, group.translation.z);
+            time = group.translation.time;
+
+            if (time > 0) {
+                time_milis = time * 1000; // miliseconds
+
+                if (show_axis) {
+                    glBegin(GL_LINE_LOOP);
+                    for (int i = 0; i < 100; ++i) {
+                        auto [pos, deriv] = getGlobalCatmullRomPoint(group.translation.points, ((float)i) / 100.0f);
+                        glVertex3f(pos.x, pos.y, pos.z);
+                    }
+                    glEnd();
+                }
+
+
+                auto [pos, deriv] = getGlobalCatmullRomPoint(group.translation.points, ((float) (glutGet(GLUT_ELAPSED_TIME) % time_milis)) / time_milis);
+
+                glTranslatef(pos.x, pos.y, pos.z);
+
+
+                if (group.translation.align) {
+                    float m[16];
+                    static Vector vec_y(0, 1, 0);
+                    
+                    deriv.normalize();
+
+                    Vector vec_z = deriv.cross(vec_y);
+                    vec_z.normalize();
+
+                    vec_y = vec_z.cross(deriv);
+                    vec_y.normalize();
+
+                    buildRotMatrix(deriv, vec_y, vec_z, m);
+                    glMultMatrixf(m);
+                }
+            }
+            else
+                glTranslatef(group.translation.x, group.translation.y, group.translation.z);
             break;
         case Transformation::ROTATION:
-            glRotatef(group.rotation.alpha, group.rotation.axis_x, group.rotation.axis_y, group.rotation.axis_z);
+            time = group.rotation.time;
+
+            if (time > 0) {
+                time_milis = time * 1000; // miliseconds
+                glRotatef((((float)(glutGet(GLUT_ELAPSED_TIME) % time_milis)) / time_milis) * 360 - 180, group.rotation.axis_x, group.rotation.axis_y, group.rotation.axis_z);
+            }
+            else
+                glRotatef(group.rotation.alpha, group.rotation.axis_x, group.rotation.axis_y, group.rotation.axis_z);
             break;
         case Transformation::SCALE:
             glScalef(group.scale.x, group.scale.y, group.scale.z);
@@ -392,6 +441,7 @@ int main(int argc, char ** argv) {
 
     // Required callback registry 
     glutDisplayFunc(renderScene);
+    glutIdleFunc(renderScene);
     glutReshapeFunc(changeSize);
     glPolygonMode(GL_FRONT, GL_FILL);
 
