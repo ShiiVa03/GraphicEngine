@@ -12,7 +12,7 @@ Translation::Translation(float x, float y, float z) {
 
 Translation::Translation(float time, bool align, std::vector<Point> points) {
     this->time = time;
-    this->align;
+    this->align = align;
     this->points = points;
 }
 

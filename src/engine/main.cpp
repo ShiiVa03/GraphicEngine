@@ -8,6 +8,7 @@
 #include <string>
 #include <unordered_map>
 #include <stdexcept>
+#include <tuple>
 
 #include "catmull_rom.hpp"
 #include "../utils/vector.hpp"
@@ -20,17 +21,20 @@
 #ifdef __APPLE__
 #include <GLUT/glut.h>
 #else
+#include <GL/glew.h>
 #include <GL/glut.h>
 #endif
 
 static Camera camera;
 static Group main_group;
-static std::unordered_map<std::string, std::vector<Point>> models_vertices;
+static std::unordered_map<std::string, std::tuple<GLuint, long>> models_vertices;
 
 static GLenum current_mode = GL_FILL;
 
-bool show_axis = true;
-bool show_aim = true;
+static GLuint * buffers;
+
+static bool show_axis = true;
+static bool show_aim = true;
 
 void changeSize(int w, int h) {
 
@@ -84,7 +88,6 @@ void renderGroup(const Group& group) {
 
                 glTranslatef(pos.x, pos.y, pos.z);
 
-
                 if (group.translation.align) {
                     float m[16];
                     static Vector vec_y(0, 1, 0);
@@ -121,15 +124,14 @@ void renderGroup(const Group& group) {
     }
 
 
-    glBegin(GL_TRIANGLES);
     for (const auto& model : group.models) {
-        std::vector<Point>& vertices = models_vertices.at(model.file);
-
-        for (const auto& point : vertices)
-            glVertex3f(point.x, point.y, point.z);
+        auto [buffer, total_vertices] = models_vertices.at(model.file);
+        
+        glBindBuffer(GL_ARRAY_BUFFER, buffer);
+        glVertexPointer(3, GL_FLOAT, 0, 0);
+        glDrawArrays(GL_TRIANGLES, 0, total_vertices);
 
     }
-    glEnd();
 
 
     for (auto const& sub_group : group.groups) {
@@ -202,12 +204,19 @@ void loadModels(const Group& group) {
 
             stream >> total_vertices;
 
-            models_vertices.emplace(model.file, std::vector<Point>());
-            std::vector<Point>& vertices = models_vertices.at(model.file);
+            GLuint buffer;
+            glGenBuffers(1, &buffer);
+
+            models_vertices.emplace(model.file, std::make_tuple(buffer, total_vertices));
+
+            std::vector<Point> vertices;
             vertices.reserve(total_vertices);
 
             while (stream >> x >> y >> z)
                 vertices.emplace_back(x, y, z);
+            
+            glBindBuffer(GL_ARRAY_BUFFER, buffer);
+            glBufferData(GL_ARRAY_BUFFER, 3 * total_vertices * sizeof(float), vertices.data(), GL_STATIC_DRAW);
         }
     }
 
@@ -419,6 +428,21 @@ int main(int argc, char ** argv) {
         return -1;
     }
     
+
+    // init GLUT and the window
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
+    glutInitWindowPosition(100, 100);
+    glutInitWindowSize(800, 800);
+    glutCreateWindow("CG@DI-UM");
+
+    // init GLEW
+#ifndef __APPLE__
+    glewInit();
+#endif
+    glEnableClientState(GL_VERTEX_ARRAY);
+
+
     try {
         if (!initContext(argv[1])) {
             std::cout << "Error: Provided .xml file is corrupted or not found" << std::endl;
@@ -428,16 +452,9 @@ int main(int argc, char ** argv) {
         std::cout << "Error: " << ex.what() << std::endl;
         return -1;
     }
+
+
     
-
-
-
-    // init GLUT and the window
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
-    glutInitWindowPosition(100, 100);
-    glutInitWindowSize(800, 800);
-    glutCreateWindow("CG@DI-UM");
 
     // Required callback registry 
     glutDisplayFunc(renderScene);

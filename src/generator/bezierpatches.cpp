@@ -31,7 +31,6 @@ void Bezier::parse(char *filename){
         std::vector<int> ind;
         std::istringstream iline(line);
         std::string num;
-        std::cout << "linha " << line << std::endl;
         
         while(getline(iline, num, ',')){
             
@@ -173,7 +172,7 @@ std::vector<Point> Bezier::getPatchPoints(int patchNumber){
     std::vector<int> patchPoints = indices[patchNumber];
 
 
-    for(int i = 0; i < patchPoints.size(); ++i)
+    for(size_t i = 0; i < patchPoints.size(); ++i)
         res.push_back(control_points[patchPoints[i]]);
 
     return res;
