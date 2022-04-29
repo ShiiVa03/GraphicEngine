@@ -60,11 +60,19 @@ class GenElementsXML:
             for transformation in element.transformations:
                 match transformation.__class__.__name__:
                     case "Translation":
-                        ET.SubElement(transformations, "translate", x=transformation.x, y=transformation.y, z=transformation.z)
+                        if hasattr(transformation, 'time'):
+                            translations = ET.SubElement(transformations, "translate", time=str(transformation.time), align="False")
+                            for position in transformation.positions:
+                                ET.SubElement(translations, "point", x=str(round(position[0], 3)), y=str(round(position[1], 3)), z=str(round(position[2], 3)))
+                        else:
+                            ET.SubElement(transformations, "translate", x=str(round(transformation.x, 3)), y=str(round(transformation.y, 3)), z=str(round(transformation.z, 3)))
                     case "Rotation":
-                        ET.SubElement(transformations, "rotate", angle=transformation.angle, x=transformation.axis_x, y=transformation.axis_y, z=transformation.axis_z)
+                        if hasattr(transformation, 'time'):
+                            ET.SubElement(transformations, "rotate", time=str(transformation.time), x=str(round(transformation.axis_x, 3)), y=str(round(transformation.axis_y, 3)), z=str(round(transformation.axis_z, 3)))
+                        else:
+                            ET.SubElement(transformations, "rotate", angle=str(transformation.angle), x=str(round(transformation.axis_x, 3)), y=str(round(transformation.axis_y, 3)), z=str(round(transformation.axis_z, 3)))
                     case "Scale":
-                        ET.SubElement(transformations, "scale", x=transformation.x, y=transformation.y, z=transformation.z)
+                        ET.SubElement(transformations, "scale", x=str(transformation.x), y=str(transformation.y), z=str(transformation.z))
 
 
         models = ET.SubElement(group, "models")
