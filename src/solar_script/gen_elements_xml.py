@@ -61,7 +61,7 @@ class GenElementsXML:
                 match transformation.__class__.__name__:
                     case "Translation":
                         if hasattr(transformation, 'time'):
-                            translations = ET.SubElement(transformations, "translate", time=str(transformation.time), align="False")
+                            translations = ET.SubElement(transformations, "translate", time=str(transformation.time), align=str(transformation.align))
                             for position in transformation.positions:
                                 ET.SubElement(translations, "point", x=str(round(position[0], 3)), y=str(round(position[1], 3)), z=str(round(position[2], 3)))
                         else:

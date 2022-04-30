@@ -145,6 +145,16 @@ neptune = Element("sphere.3d", elements=moons, transformations=transformations)
 
 
 
+#### COMET ####
+
+transformations = [
+    Translation(15, create_orbit((40, 30, 0)), True),
+    Scale(0.1, 0.1, 0.1),
+    Rotation(9, *get_3rand())
+]
+
+comet = Element("teapot.3d", transformations=transformations)
+
 
 
 
@@ -165,7 +175,8 @@ solar_system = [
     jupiter,
     saturn,
     uranus,
-    neptune
+    neptune,
+    comet
 ]
 
 
