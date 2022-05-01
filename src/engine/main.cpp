@@ -31,8 +31,6 @@ static std::unordered_map<std::string, std::tuple<GLuint, long>> models_vertices
 
 static GLenum current_mode = GL_FILL;
 
-static GLuint * buffers;
-
 static bool show_axis = true;
 static bool show_aim = true;
 
