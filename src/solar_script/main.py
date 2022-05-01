@@ -153,7 +153,7 @@ transformations = [
     Rotation(9, *get_3rand())
 ]
 
-comet = Element("teapot.3d", transformations=transformations)
+comet = Element("bezier.3d", transformations=transformations)
 
 
 
