@@ -1,8 +1,11 @@
+#include "../utils/vector.hpp"
+#include "../utils/point2D.hpp"
 #include "bezierpatches.hpp"
 
 #define _USE_MATH_DEFINES
 #include "math.h"
 
+#include <tuple>
 #include <fstream>
 #include <string>
 #include <iostream>    
@@ -153,16 +156,30 @@ void Bezier::computeMatrix(std::vector<Point> &points, Point a[4][4]){
     multMatPointMat(firstM, m, a);    
 }
 
-Point Bezier::getBezierPoint(float u, float v, Point matrix[4][4]){
+std::tuple<Point, Vector> Bezier::getBezierPoint(float u, float v, Point matrix[4][4]){
     
     
     float uvec[4] = {powf(u,3.0f), powf(u,2.0f), u, 1.0f};
-    float vvec[4] = {powf(v,3.0), powf(v,2.0f), v, 1.0f};
+    float vvec[4] = {powf(v,3.0f), powf(v,2.0f), v, 1.0f};
+    float derivu[4] = {3.0f * powf(u,2.0f), 2.0f * u, 1, 0};
+    float derivv[4] = {3.0f * powf(v,2.0f), 2.0f * v, 1, 0};
+
+    Point firstDeriv[4];
+    multMatrixVector(matrix, derivu, firstDeriv);
+    Point derivUPoint = multVecVec(firstDeriv, vvec);
+    Vector vectorU(derivUPoint.x, derivUPoint.y, derivUPoint.z);
+
+    Point secDeriv[4];
+    multMatrixVector(matrix, uvec, secDeriv);
+    Point derivVPoint = multVecVec(secDeriv, derivv);
+    Vector vectorV(derivVPoint.x, derivVPoint.y, derivVPoint.z);
+
+    Vector normal = vectorV.cross(vectorU);
 
     Point firstVec[4];
     multMatrixVector(matrix, uvec, firstVec);    
     
-    return multVecVec(firstVec, vvec);
+    return std::make_tuple(multVecVec(firstVec, vvec), normal);
 
 }
 
@@ -179,9 +196,11 @@ std::vector<Point> Bezier::getPatchPoints(int patchNumber){
 
 }
 
-std::vector<Point> Bezier::draw(){
+std::tuple<std::vector<Point>, std::vector<Vector>, std::vector<Point2D>> Bezier::draw(){
 
     std::vector<Point> points;
+    std::vector<Vector> normals;
+    std::vector<Point2D> textures;
 
     float alpha = 1.0f / tess_level;
 
@@ -196,29 +215,38 @@ std::vector<Point> Bezier::draw(){
             float u = j * alpha;
             float nextU = (j+ 1) * alpha;
 
+
             for (int k = 0; k < tess_level; ++k) {
             
                 float v = k * alpha;
                 float nextV = (k + 1) * alpha;
 
                 
-                Point p0 = getBezierPoint(u, v, matrix);
-                Point p1 = getBezierPoint(nextU, v, matrix);
-                Point p2 = getBezierPoint(nextU, nextV, matrix);
-                Point p3 = getBezierPoint(u, nextV, matrix);
+                auto [p0, n0] = getBezierPoint(u, v, matrix);
+                auto [p1, n1] = getBezierPoint(nextU, v, matrix);
+                auto [p2, n2] = getBezierPoint(nextU, nextV, matrix);
+                auto [p3, n3] = getBezierPoint(u, nextV, matrix);
                  
                 points.push_back(p0);
                 points.push_back(p1);
                 points.push_back(p2);
 
+                normals.push_back(n0);
+                normals.push_back(n1);
+                normals.push_back(n2);                
+
                 points.push_back(p2);
                 points.push_back(p3);
                 points.push_back(p0);
+
+                normals.push_back(n2);
+                normals.push_back(n3);
+                normals.push_back(n0);
             
             }
         }
     }
 
-    return points;
+    return std::make_tuple(std::move(points), std::move(normals), std::move(textures));
 
 }

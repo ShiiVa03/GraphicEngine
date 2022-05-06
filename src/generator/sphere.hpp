@@ -8,7 +8,7 @@ class Sphere{
     public:
         float radius, slices, stacks;
         Sphere(float radius, float sices, float stacks);
-        std::vector<Point> draw();
+        std::tuple<std::vector<Point>, std::vector<Vector>, std::vector<Point2D>> draw();
         
 };
 

@@ -8,7 +8,7 @@ class Torus{
     public:
         float radius_outer, radius_inner, slices, stacks;
         Torus(float radius_outer, float radius_inner, float slices, float stacks);
-        std::vector<Point> draw();
+        std::tuple<std::vector<Point>, std::vector<Vector>, std::vector<Point2D>> draw();
         
 };
 

@@ -3,14 +3,16 @@
 
 #include "../utils/vector.hpp"
 #include "../utils/point.hpp"
+#include "../utils/point2D.hpp"
 #include <vector>
+#include <tuple>
 
 class Plane{    
     public:
         float size, divisions;
         Plane(float size, float divisions);
-        void drawPlane(std::vector<Point>& points, Point origin, Vector horizontalVec, Vector verticalVec);
-        std::vector<Point> draw();        
+        void drawPlane(std::vector<Point>&, std::vector<Vector>&, std::vector<Point2D>&, Point origin, Vector horizontalVec, Vector verticalVec, Vector normal);
+        std::tuple<std::vector<Point>, std::vector<Vector>, std::vector<Point2D>> draw();        
 };
 
 #endif

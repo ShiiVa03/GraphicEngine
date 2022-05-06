@@ -27,9 +27,9 @@ class Bezier{
         void computeMatrix(std::vector<Point> &points, Point a[4][4]);
         std::vector<Point> getPatchPoints(int patchNumber);
 
-        Point getBezierPoint(float u, float v, Point matrix[4][4]);
+        std::tuple<Point, Vector> getBezierPoint(float u, float v, Point matrix[4][4]);
 
-        std::vector<Point> draw();
+        std::tuple<std::vector<Point>, std::vector<Vector>, std::vector<Point2D>> draw();
 
 };
 

@@ -1,4 +1,5 @@
 #include "../utils/point.hpp"
+#include "../utils/point2D.hpp"
 #include "bezierpatches.hpp"
 #include "sphere.hpp"
 #include "plane.hpp"
@@ -6,18 +7,23 @@
 #include "cone.hpp"
 #include "box.hpp"
 
+#include <any>
+#include <tuple>
 #include <math.h>
 #include <vector>
 #include <string>
 #include <fstream>
 #include <iostream>
 
-void writeToFile(std::vector<Point>& points, std::string filename){
+void writeToFile(auto tuple, std::string filename){
     std::ofstream file(filename);
+    auto [points, normals, textures] = tuple;
     file << points.size() << std::endl;
     
-    for(auto const& point : points){
-        file << point.x << " " << point.y << " " << point.z <<std::endl;
+    for(auto i = 0; i < points.size(); ++i){
+        file << points.at(i).x << " " << points.at(i).y << " " << points.at(i).z << " " 
+                << normals.at(i).vx << " " << normals.at(i).vy << " " << normals.at(i).vz << " " << std::endl;
+                //<< textures.at(i).x << " " << textures.at(i).y << std::endl;
     }
 
     file.close();
@@ -30,9 +36,12 @@ int main(int argc, char **argv) {
         std::cout << "Necessita de pelo menos dois argumentos" << std::endl;
         return 1;
     }
+
+    std::tuple<std::vector<Point>, std::vector<Vector>, std::vector<Point2D>> tuple;
     std::vector<Point> points;
     std::string figure(argv[1]);
     std::string file;
+    bool flag = true;
 
     if(!figure.compare("plane")){
         if(argc == 5){
@@ -41,9 +50,10 @@ int main(int argc, char **argv) {
             file = argv[4];
 
             Plane plane(size, divisions);
-            points = plane.draw();
+            tuple = plane.draw();
                                 
         }else{
+            flag = false;
             std::cout << "Plane necessita de 3 argumentos" << std::endl;
         }
     }else if(!figure.compare("box")){
@@ -53,9 +63,10 @@ int main(int argc, char **argv) {
             file = argv[4];
 
             Box box(size, divisions);
-            points = box.draw();
+            tuple = box.draw();
                                 
         }else{
+            flag = false;
             std::cout << "Box necessita de 3 argumentos" << std::endl;
         }
     }else if(!figure.compare("cone")){ 
@@ -68,9 +79,10 @@ int main(int argc, char **argv) {
             file = argv[6];
 
             Cone cone(radius, height, slices, stacks);
-            points = cone.draw();
+            tuple = cone.draw();
             
         }else{
+            flag = false;
             std::cout << "Cone necessita de 5 argumentos" << std::endl;
         }
     }else if(!figure.compare("sphere")){
@@ -82,8 +94,9 @@ int main(int argc, char **argv) {
             file = argv[5];
 
             Sphere sphere(radius, slices, stacks);
-            points = sphere.draw();
+            tuple = sphere.draw();
         }else{
+            flag = false;
             std::cout << "Sphere necessita de 4 argumentos" << std::endl;
         }
 
@@ -98,9 +111,10 @@ int main(int argc, char **argv) {
             file = argv[6];
 
             Torus torus(radius_outer, radius_inner, slices, stacks);
-            points = torus.draw();
+            tuple = torus.draw();
         }
         else {
+            flag = false;
             std::cout << "Torus necessita de 5 argumentos" << std::endl;
         }
 
@@ -115,18 +129,20 @@ int main(int argc, char **argv) {
             Bezier bezier(level);
             bezier.parse(filein);
 
-            points = bezier.draw();
+            tuple = bezier.draw();
 
         }else{
+            flag = false;
             std::cout << "Bezier necessita de 3 argumentos" << std::endl;
         }
 
     }else{
+        flag = false;
         std::cout << "Comando nao disponivel" << std::endl;
     }
     
-    if(!points.empty())
-        writeToFile(points, file);
+    if(flag)
+        writeToFile(tuple, file);
 
     return 0;
     

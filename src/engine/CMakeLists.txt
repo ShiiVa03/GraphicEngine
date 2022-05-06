@@ -54,9 +54,9 @@ else (WIN32) #Linux and Mac
 		find_package(GLEW REQUIRED)
 		include_directories(${GLEW_INCLUDE_DIRS})
 		link_libraries(${GLEW_LIBRARIES})
-		target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES} ${GLEW_LIBRARIES})
+		target_link_libraries( engine utils pugixml ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES} ${GLEW_LIBRARIES})
 	else (NOT APPLE)
-		target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES} )
+		target_link_libraries( engine utils pugixml ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES} )
 	endif(NOT APPLE)
 
     if(NOT GLUT_FOUND)
