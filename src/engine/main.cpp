@@ -321,7 +321,7 @@ void loadModels(const Group& group) {
             GLuint texID;
             glGenTextures(1, &texID); // unsigned int texID - variavel global;
 
-            textures_buffers.emplace(model.file, texID);
+            textures_buffers.emplace(model.texture, texID);
 
             glBindTexture(GL_TEXTURE_2D, texID);
 
@@ -562,7 +562,7 @@ int main(int argc, char ** argv) {
 
     ilInit();
     ilEnable(IL_ORIGIN_SET);
-    ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
+    //ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
 
 
     try {

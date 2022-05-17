@@ -17,13 +17,14 @@
 
 void writeToFile(auto tuple, std::string filename){
     std::ofstream file(filename);
+    std::ofstream filetex(filename + ".tex");
     auto [points, normals, textures] = tuple;
     file << points.size() << std::endl;
     
     for(auto i = 0; i < points.size(); ++i){
         file << points.at(i).x << " " << points.at(i).y << " " << points.at(i).z << " " 
                 << normals.at(i).vx << " " << normals.at(i).vy << " " << normals.at(i).vz << " " << std::endl;
-                //<< textures.at(i).x << " " << textures.at(i).y << std::endl;
+        filetex << textures.at(i).x << " " << textures.at(i).y << std::endl;    
     }
 
     file.close();
