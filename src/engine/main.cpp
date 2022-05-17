@@ -1,7 +1,3 @@
-#include "parsing.hpp"
-#include "camera.hpp"
-#include "model.hpp"
-#include "group.hpp"
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -10,10 +6,15 @@
 #include <stdexcept>
 #include <tuple>
 
+#include "parsing.hpp"
+#include "camera.hpp"
+#include "model.hpp"
+#include "group.hpp"
 #include "light.hpp"
 #include "catmull_rom.hpp"
 #include "../utils/vector.hpp"
 #include "../utils/point.hpp"
+#include "../utils/point2D.hpp"
 #include "../utils/spherical_coord.hpp"
 
 #define _USE_MATH_DEFINES
@@ -26,10 +27,13 @@
 #include <GL/glut.h>
 #endif
 
+#include <IL/il.h>
+
 static Camera camera;
 static Group main_group;
 static std::vector<Light> lights;
-static std::unordered_map<std::string, std::tuple<GLuint, GLuint, long>> models_buffers;
+static std::unordered_map<std::string, std::tuple<GLuint, GLuint, GLuint, long>> models_buffers;
+static std::unordered_map<std::string, unsigned int> textures_buffers;
 
 static GLenum current_mode = GL_FILL;
 
@@ -127,7 +131,7 @@ void renderGroup(Group& group) {
 
 
     for (Model& model : group.models) {
-        auto [vbuffer, nbuffer, total_vertices] = models_buffers.at(model.file);
+        auto [vbuffer, nbuffer, tbuffer, total_vertices] = models_buffers.at(model.file);
 
 
         glMaterialfv(GL_FRONT, GL_DIFFUSE, model.color_diffuse.getVectorf().data());
@@ -142,8 +146,16 @@ void renderGroup(Group& group) {
         glBindBuffer(GL_ARRAY_BUFFER, nbuffer);
         glNormalPointer(GL_FLOAT, 0, 0);
 
+        if (!model.texture.empty()) {
+            glBindBuffer(GL_ARRAY_BUFFER, tbuffer);
+            glTexCoordPointer(2, GL_FLOAT, 0, 0);
 
-        glDrawArrays(GL_TRIANGLES, 0, total_vertices);
+            glBindTexture(GL_TEXTURE_2D, textures_buffers.at(model.texture));
+            glDrawArrays(GL_TRIANGLES, 0, total_vertices);
+            glBindTexture(GL_TEXTURE_2D, 0);
+        }
+        else
+            glDrawArrays(GL_TRIANGLES, 0, total_vertices);
 
     }
 
@@ -232,24 +244,37 @@ void renderScene(void) {
 
 void loadModels(const Group& group) {
     long total_vertices;
-    float x, y, z, nx, ny, nz;
+    float x, y, z, nx, ny, nz, tx, ty;
 
     for (const auto& model : group.models) {
+        bool has_texture = !model.texture.empty();
+
         if (!models_buffers.contains(model.file)) {
             std::ifstream stream(model.file);
+            std::ifstream tex_stream;
 
             if (!stream)
                 throw std::invalid_argument(model.file + " can't be opened");
 
+            if (has_texture) {
+                tex_stream.open(model.file + ".tex");
+
+                if (!tex_stream)
+                    throw std::invalid_argument(model.file + ".tex can't be opened");
+            }
+
+
             stream >> total_vertices;
 
-            GLuint buffers[2];
-            glGenBuffers(2, buffers);
+            GLuint buffers[3];
 
-            models_buffers.emplace(model.file, std::make_tuple(buffers[0], buffers[1], total_vertices));
+            glGenBuffers(has_texture ? 3 : 2, buffers);
+
+            models_buffers.emplace(model.file, std::make_tuple(buffers[0], buffers[1], buffers[2], total_vertices));
 
             std::vector<Point> vertices;
             std::vector<Vector> normals;
+            
 
             vertices.reserve(total_vertices);
             normals.reserve(total_vertices);
@@ -264,6 +289,49 @@ void loadModels(const Group& group) {
 
             glBindBuffer(GL_ARRAY_BUFFER, buffers[1]);
             glBufferData(GL_ARRAY_BUFFER, 3 * total_vertices * sizeof(float), normals.data(), GL_STATIC_DRAW);
+
+            
+
+            if (has_texture) {
+                std::vector<Point2D> tex_coords;
+
+                tex_coords.reserve(total_vertices);
+
+                while (tex_stream >> tx >> ty)
+                    tex_coords.emplace_back(tx, ty);
+
+                glBindBuffer(GL_ARRAY_BUFFER, buffers[2]);
+                glBufferData(GL_ARRAY_BUFFER, 2 * total_vertices * sizeof(float), tex_coords.data(), GL_STATIC_DRAW);
+            }
+        }
+
+
+        if (has_texture && !textures_buffers.contains(model.texture)) {
+            unsigned int t, tw, th;
+            unsigned char * tex_data;
+
+            ilGenImages(1, &t);
+            ilBindImage(t);
+            ilLoadImage((ILstring) model.texture.c_str());
+            tw = ilGetInteger(IL_IMAGE_WIDTH);
+            th = ilGetInteger(IL_IMAGE_HEIGHT);
+            ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
+            tex_data = ilGetData();
+
+            GLuint texID;
+            glGenTextures(1, &texID); // unsigned int texID - variavel global;
+
+            textures_buffers.emplace(model.file, texID);
+
+            glBindTexture(GL_TEXTURE_2D, texID);
+
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tw, th, 0, GL_RGBA, GL_UNSIGNED_BYTE, tex_data);
+
+            ilDeleteImages(1, &t);
         }
     }
 
@@ -490,6 +558,11 @@ int main(int argc, char ** argv) {
 
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_NORMAL_ARRAY);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+    ilInit();
+    ilEnable(IL_ORIGIN_SET);
+    ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
 
 
     try {
@@ -537,11 +610,8 @@ int main(int argc, char ** argv) {
         glLightfv(light, GL_SPECULAR, white);
     }
 
-    
-
-    
-
-    
+    // Textures
+    glEnable(GL_TEXTURE_2D);
 
 
     // enter GLUT's main cycle
