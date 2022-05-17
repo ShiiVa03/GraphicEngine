@@ -6,7 +6,8 @@
 
 #include "camera.hpp"
 #include "group.hpp"
+#include "light.hpp"
 
-bool parse(char * filename, Camera &camera, Group& group);
+bool parse(char * filename, Camera &camera, std::vector<Light>& lights, Group& group);
 
 #endif

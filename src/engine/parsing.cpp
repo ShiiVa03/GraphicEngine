@@ -3,13 +3,53 @@
 #include "camera.hpp"
 #include "model.hpp"
 #include "group.hpp"
+#include "color.hpp"
+#include "light.hpp"
 
 #include <vector>
 #include <iostream>
 #include <stdexcept>
 
 void parseModel(Model &model, pugi::xml_node toolModel) {
-    model.init(toolModel.attribute("file").as_string());
+    
+    std::string file(toolModel.attribute("file").as_string());
+    std::string texture(toolModel.child("texture").attribute("file").as_string());
+
+    pugi::xml_node color_node(toolModel.child("color"));
+
+    pugi::xml_node diffuse_node(color_node.child("diffuse"));
+    pugi::xml_node ambient_node(color_node.child("ambient"));
+    pugi::xml_node specular_node(color_node.child("specular"));
+    pugi::xml_node emissive_node(color_node.child("emissive"));
+    pugi::xml_node shininess_node(color_node.child("shininess"));
+
+    Color color_diffuse(
+        diffuse_node.attribute("R").as_int(200),
+        diffuse_node.attribute("G").as_int(200),
+        diffuse_node.attribute("B").as_int(200)
+    );
+
+    Color color_ambient(
+        ambient_node.attribute("R").as_int(50),
+        ambient_node.attribute("G").as_int(50),
+        ambient_node.attribute("B").as_int(50)
+    );
+
+    Color color_specular(
+        specular_node.attribute("R").as_int(0),
+        specular_node.attribute("G").as_int(0),
+        specular_node.attribute("B").as_int(0)
+    );
+
+    Color color_emissive(
+        emissive_node.attribute("R").as_int(0),
+        emissive_node.attribute("G").as_int(0),
+        emissive_node.attribute("B").as_int(0)
+    );
+
+    int color_shininess = shininess_node.attribute("value").as_int(0);
+
+    model.init(file, texture, color_diffuse, color_ambient, color_specular, color_emissive, color_shininess);
 }
 
 void parseGroup(Group &parent_group, pugi::xml_node toolParentGroup) {
@@ -61,6 +101,28 @@ void parseGroup(Group &parent_group, pugi::xml_node toolParentGroup) {
     }
 }
 
+void parseLights(std::vector<Light>& lights, pugi::xml_node toolLights) {
+
+    for (pugi::xml_node toolLight : toolLights.children("light")) {
+        Light light(
+            lightTypeStringToEnum(toolLight.attribute("type").as_string()),
+            Point(
+                toolLight.attribute("posX").as_float(),
+                toolLight.attribute("posY").as_float(),
+                toolLight.attribute("posZ").as_float()
+            ),
+            Vector(
+                toolLight.attribute("dirX").as_float(),
+                toolLight.attribute("dirY").as_float(),
+                toolLight.attribute("dirZ").as_float()
+            ),
+            toolLight.attribute("cutoff").as_float()
+        );
+
+        lights.push_back(light);
+    }
+}
+
 void parseCamera(Camera& camera, pugi::xml_node toolCamera) {
     pugi::xml_node tool;
 
@@ -82,7 +144,7 @@ void parseCamera(Camera& camera, pugi::xml_node toolCamera) {
     camera.init(eye, center, up, fov, near, far);
 }
 
-bool parse(char * filename, Camera &camera, Group& group) {
+bool parse(char * filename, Camera &camera, std::vector<Light>& lights, Group& group) {
     pugi::xml_document doc;
     pugi::xml_parse_result result = doc.load_file(filename);
 
@@ -102,6 +164,11 @@ bool parse(char * filename, Camera &camera, Group& group) {
         throw std::invalid_argument("Camera not found in .xml's World");
 
     parseCamera(camera, toolCamera);
+
+
+    pugi::xml_node toolLights = toolWorld.child("lights");
+
+    parseLights(lights, toolLights);
 
 
     pugi::xml_node toolGroup = toolWorld.child("group");

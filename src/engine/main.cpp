@@ -10,6 +10,7 @@
 #include <stdexcept>
 #include <tuple>
 
+#include "light.hpp"
 #include "catmull_rom.hpp"
 #include "../utils/vector.hpp"
 #include "../utils/point.hpp"
@@ -27,7 +28,8 @@
 
 static Camera camera;
 static Group main_group;
-static std::unordered_map<std::string, std::tuple<GLuint, long>> models_vertices;
+static std::vector<Light> lights;
+static std::unordered_map<std::string, std::tuple<GLuint, GLuint, long>> models_buffers;
 
 static GLenum current_mode = GL_FILL;
 
@@ -59,7 +61,7 @@ void changeSize(int w, int h) {
     glMatrixMode(GL_MODELVIEW);
 }
 
-void renderGroup(const Group& group) {
+void renderGroup(Group& group) {
     float time;
     int time_milis;
 
@@ -73,12 +75,14 @@ void renderGroup(const Group& group) {
                 time_milis = time * 1000; // miliseconds
 
                 if (show_axis) {
+                    glDisable(GL_LIGHTING);
                     glBegin(GL_LINE_LOOP);
                     for (int i = 0; i < 100; ++i) {
                         auto [pos, deriv] = getGlobalCatmullRomPoint(group.translation.points, ((float)i) / 100.0f);
                         glVertex3f(pos.x, pos.y, pos.z);
                     }
                     glEnd();
+                    glEnable(GL_LIGHTING);
                 }
 
 
@@ -122,17 +126,29 @@ void renderGroup(const Group& group) {
     }
 
 
-    for (const auto& model : group.models) {
-        auto [buffer, total_vertices] = models_vertices.at(model.file);
-        
-        glBindBuffer(GL_ARRAY_BUFFER, buffer);
+    for (Model& model : group.models) {
+        auto [vbuffer, nbuffer, total_vertices] = models_buffers.at(model.file);
+
+
+        glMaterialfv(GL_FRONT, GL_DIFFUSE, model.color_diffuse.getVectorf().data());
+        glMaterialfv(GL_FRONT, GL_AMBIENT, model.color_ambient.getVectorf().data());
+        glMaterialfv(GL_FRONT, GL_SPECULAR, model.color_specular.getVectorf().data());
+        glMaterialfv(GL_FRONT, GL_EMISSION, model.color_emissive.getVectorf().data());
+        glMateriali(GL_FRONT, GL_SHININESS, model.color_shininess);
+
+        glBindBuffer(GL_ARRAY_BUFFER, vbuffer);
         glVertexPointer(3, GL_FLOAT, 0, 0);
+
+        glBindBuffer(GL_ARRAY_BUFFER, nbuffer);
+        glNormalPointer(GL_FLOAT, 0, 0);
+
+
         glDrawArrays(GL_TRIANGLES, 0, total_vertices);
 
     }
 
 
-    for (auto const& sub_group : group.groups) {
+    for (auto& sub_group : group.groups) {
         glPushMatrix();
         renderGroup(sub_group);
         glPopMatrix();
@@ -146,6 +162,25 @@ void updateCamera(void) {
         camera.up.vx, camera.up.vy, camera.up.vz);
 }
 
+
+void renderLights(void) {
+    int i = 0;
+    GLuint light_idx;
+
+    for (Light& light : lights) {
+        light_idx = GL_LIGHT0 + i;
+        glLightfv(light_idx, GL_POSITION, light.getSourceVectorf().data());
+
+        
+        if (light.type == SPOTLIGHT) {
+            glLightfv(light_idx, GL_SPOT_DIRECTION, light.getSpotLightDirVectorf().data());
+            glLightf(light_idx, GL_SPOT_CUTOFF, light.cut_off);
+        }
+
+        ++i;
+    }
+}
+
 void renderScene(void) {
 
     // clear buffers
@@ -155,34 +190,40 @@ void renderScene(void) {
     glLoadIdentity();
     updateCamera();
 
+    if (show_aim || show_axis) {
+        glDisable(GL_LIGHTING);
 
-    if (show_axis) {
-        glBegin(GL_LINES);
-        // X axis in red
-        glColor3f(1.0f, 0.0f, 0.0f);
-        glVertex3f(-100.0f, 0.0f, 0.0f);
-        glVertex3f(100.0f, 0.0f, 0.0f);
-        // Y Axis in Green
-        glColor3f(0.0f, 1.0f, 0.0f);
-        glVertex3f(0.0f, -100.0f, 0.0f);
-        glVertex3f(0.0f, 100.0f, 0.0f);
-        // Z Axis in Blue
-        glColor3f(0.0f, 0.0f, 1.0f);
-        glVertex3f(0.0f, 0.0f, -100.0f);
-        glVertex3f(0.0f, 0.0f, 100.0f);
-        glEnd();
+        if (show_axis) {
+            glBegin(GL_LINES);
+            // X axis in red
+            glColor3f(1.0f, 0.0f, 0.0f);
+            glVertex3f(-100.0f, 0.0f, 0.0f);
+            glVertex3f(100.0f, 0.0f, 0.0f);
+            // Y Axis in Green
+            glColor3f(0.0f, 1.0f, 0.0f);
+            glVertex3f(0.0f, -100.0f, 0.0f);
+            glVertex3f(0.0f, 100.0f, 0.0f);
+            // Z Axis in Blue
+            glColor3f(0.0f, 0.0f, 1.0f);
+            glVertex3f(0.0f, 0.0f, -100.0f);
+            glVertex3f(0.0f, 0.0f, 100.0f);
+            glEnd();
+        }
+        if (show_aim) {
+            glColor3f(0.8f, 0.2f, 1.0f);
+            glPushMatrix();
+            Vector vec(Point(), camera.center);
+            glTranslatef(vec.vx, vec.vy, vec.vz);
+            glutSolidSphere(.05, 10, 10);
+            glPopMatrix();
+        }
+
+        glColor3f(1.0f, 1.0f, 1.0f);
+        glEnable(GL_LIGHTING);
     }
-    if (show_aim) {
-        glColor3f(0.8f, 0.2f, 1.0f);
-        glPushMatrix();
-        Vector vec(Point(), camera.center);
-        glTranslatef(vec.vx, vec.vy, vec.vz);
-        glutSolidSphere(.05, 10, 10);
-        glPopMatrix();
-    }
 
-    glColor3f(1.0f, 1.0f, 1.0f);
 
+    renderLights();
     renderGroup(main_group);
 
     // End of frame
@@ -191,10 +232,10 @@ void renderScene(void) {
 
 void loadModels(const Group& group) {
     long total_vertices;
-    float x, y, z;
+    float x, y, z, nx, ny, nz;
 
     for (const auto& model : group.models) {
-        if (!models_vertices.contains(model.file)) {
+        if (!models_buffers.contains(model.file)) {
             std::ifstream stream(model.file);
 
             if (!stream)
@@ -202,19 +243,27 @@ void loadModels(const Group& group) {
 
             stream >> total_vertices;
 
-            GLuint buffer;
-            glGenBuffers(1, &buffer);
+            GLuint buffers[2];
+            glGenBuffers(2, buffers);
 
-            models_vertices.emplace(model.file, std::make_tuple(buffer, total_vertices));
+            models_buffers.emplace(model.file, std::make_tuple(buffers[0], buffers[1], total_vertices));
 
             std::vector<Point> vertices;
-            vertices.reserve(total_vertices);
+            std::vector<Vector> normals;
 
-            while (stream >> x >> y >> z)
+            vertices.reserve(total_vertices);
+            normals.reserve(total_vertices);
+
+            while (stream >> x >> y >> z >> nx >> ny >> nz) {
                 vertices.emplace_back(x, y, z);
+                normals.emplace_back(nx, ny, nz);
+            }
             
-            glBindBuffer(GL_ARRAY_BUFFER, buffer);
+            glBindBuffer(GL_ARRAY_BUFFER, buffers[0]);
             glBufferData(GL_ARRAY_BUFFER, 3 * total_vertices * sizeof(float), vertices.data(), GL_STATIC_DRAW);
+
+            glBindBuffer(GL_ARRAY_BUFFER, buffers[1]);
+            glBufferData(GL_ARRAY_BUFFER, 3 * total_vertices * sizeof(float), normals.data(), GL_STATIC_DRAW);
         }
     }
 
@@ -224,7 +273,7 @@ void loadModels(const Group& group) {
 
 bool initContext(char * filename) {
     
-    if (!parse(filename, camera, main_group))
+    if (!parse(filename, camera, lights, main_group))
         return false;
 
     loadModels(main_group);
@@ -438,7 +487,9 @@ int main(int argc, char ** argv) {
 #ifndef __APPLE__
     glewInit();
 #endif
+
     glEnableClientState(GL_VERTEX_ARRAY);
+    glEnableClientState(GL_NORMAL_ARRAY);
 
 
     try {
@@ -463,9 +514,35 @@ int main(int argc, char ** argv) {
 
     updateInputCallbacks();
     
-    //  OpenGL settings
+    // OpenGL settings
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
+
+
+    //GLfloat dark[4] = { 0.3,0.3,0.3,1.0 };
+    GLfloat white[4] = { 1.0,1.0,1.0,1.0 };
+    //GLfloat black[4] = { 0.0,0.0,0.0,1.0 };
+
+    // Lightning
+    glEnable(GL_LIGHTING);
+    glEnable(GL_RESCALE_NORMAL);
+
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, white);
+
+    for (size_t i = 0; i < lights.size(); ++i) {
+        GLenum light = GL_LIGHT0 + i;
+        glEnable(light);
+        //glLightfv(light, GL_AMBIENT, dark);
+        glLightfv(light, GL_DIFFUSE, white);
+        glLightfv(light, GL_SPECULAR, white);
+    }
+
+    
+
+    
+
+    
+
 
     // enter GLUT's main cycle
     glutMainLoop();

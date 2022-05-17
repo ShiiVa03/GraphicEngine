@@ -29,6 +29,10 @@ std::tuple<std::vector<Point>, std::vector<Vector>, std::vector<Point2D>> Cone::
     std::vector<Vector> normals;
     std::vector<Point2D> textures;
 
+    float cone_angle = atan(radius / height);
+    float y_norm = sinf(cone_angle);
+    float cos_angle = cosf(cone_angle);
+
     for(int i = 0; i < slices; ++i){
         Point base1(SphericalCoord(alpha * i, 0.0f, radius));
         Point base2(SphericalCoord(alpha * (i+1), 0.0f, radius));
@@ -53,14 +57,28 @@ std::tuple<std::vector<Point>, std::vector<Vector>, std::vector<Point2D>> Cone::
             Point lateral4(CylindricalCoord(alpha * i, stepUp * (j+1), upperRadius));
             Point lateral2(CylindricalCoord(alpha * (i+1), stepUp * (j+1), upperRadius));
 
+
+            Vector n1(cos_angle * sinf(alpha * i), y_norm, cos_angle * cosf(alpha * i));
+            Vector n2(cos_angle * sinf(alpha * (i + 1)), y_norm, cos_angle * cosf(alpha * (i + 1)));
+            Vector n3(cos_angle * sinf(alpha * (i + 1)), y_norm, cos_angle * cosf(alpha * (i + 1)));
+            Vector n4(cos_angle * sinf(alpha * i), y_norm, cos_angle * cosf(alpha * i));
+
+            n1.normalize();
+            n2.normalize();
+            n3.normalize();
+            n4.normalize();
+
             if(j == (stacks - 1)){
                 points.push_back(lateral1);
                 points.push_back(lateral3);
                 points.push_back(Point(0.0f, height, 0.0f));
 
-                normals.push_back(Vector(sinf(alpha * i), stepUp, cosf(alpha * i)));
-                normals.push_back(Vector(sinf(alpha * (i + 1)), stepUp, cosf(alpha * i)));
-                normals.push_back(Vector(sinf(alpha * i), stepUp, cosf(alpha * i)));
+                Vector n_top(cos_angle * sinf(alpha * i + alpha / 2), y_norm, cos_angle * cosf(alpha * i + alpha / 2));
+                n_top.normalize();
+
+                normals.push_back(n1);
+                normals.push_back(n3);
+                normals.push_back(n_top);
 
                             
             }else{
@@ -68,17 +86,17 @@ std::tuple<std::vector<Point>, std::vector<Vector>, std::vector<Point2D>> Cone::
                 points.push_back(lateral3);
                 points.push_back(lateral4);
 
-                normals.push_back(Vector(sinf(alpha * i), stepUp, cosf(alpha * i)));
-                normals.push_back(Vector(sinf(alpha * (i + 1)), stepUp, cosf(alpha * i)));
-                normals.push_back(Vector(sinf(alpha * i), stepUp, cosf(alpha * i)));
+                normals.push_back(n1);
+                normals.push_back(n3);
+                normals.push_back(n4);
 
                 points.push_back(lateral3);
                 points.push_back(lateral2);
                 points.push_back(lateral4);
 
-                normals.push_back(Vector(sinf(alpha * (i + 1)), stepUp, cosf(alpha * (i + 1))));
-                normals.push_back(Vector(sinf(alpha * (i + 1)), stepUp, cosf(alpha * i)));
-                normals.push_back(Vector(sinf(alpha * i), stepUp, cosf(alpha * i)));
+                normals.push_back(n3);
+                normals.push_back(n2);
+                normals.push_back(n4);
             }
 
         }
