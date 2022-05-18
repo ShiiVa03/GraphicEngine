@@ -319,7 +319,7 @@ void loadModels(const Group& group) {
             tex_data = ilGetData();
 
             GLuint texID;
-            glGenTextures(1, &texID); // unsigned int texID - variavel global;
+            glGenTextures(1, &texID);
 
             textures_buffers.emplace(model.texture, texID);
 
