@@ -31,7 +31,6 @@ void Plane::drawPlane(std::vector<Point>& points, std::vector<Vector>& normals, 
 
         for(int j = 0; j < divisions; ++j){
             
-
             //first triangle(up)
             points.push_back(p0);
             points.push_back(p3);
@@ -39,6 +38,9 @@ void Plane::drawPlane(std::vector<Point>& points, std::vector<Vector>& normals, 
             normals.push_back(normal);
             normals.push_back(normal);
             normals.push_back(normal);
+            textures.push_back(Point2D(i/divisions, j/divisions));
+            textures.push_back(Point2D((i+1) / divisions, (j+1) / divisions));
+            textures.push_back(Point2D(i / divisions , (j+1) / divisions));
 
             //second triangle(down)
             points.push_back(p0);
@@ -47,6 +49,10 @@ void Plane::drawPlane(std::vector<Point>& points, std::vector<Vector>& normals, 
             normals.push_back(normal);
             normals.push_back(normal);
             normals.push_back(normal);
+            textures.push_back(Point2D(i / divisions, j / divisions));
+            textures.push_back(Point2D((i+1) / divisions, j / divisions));
+            textures.push_back(Point2D((i+1) / divisions, (j+1) / divisions));
+
 
             //translate points horizontally
             p0.addVector(horizontalVec);
