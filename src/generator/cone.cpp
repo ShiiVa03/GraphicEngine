@@ -45,6 +45,9 @@ std::tuple<std::vector<Point>, std::vector<Vector>, std::vector<Point2D>> Cone::
         normals.push_back(Vector(0, -1, 0));
         normals.push_back(Vector(0, -1, 0));
 
+        textures.push_back(Point2D(0, 0));
+        textures.push_back(Point2D(0, 0));
+        textures.push_back(Point2D(0, 0));
 
         for(int j = 0; j < stacks; ++j){
             
@@ -80,6 +83,10 @@ std::tuple<std::vector<Point>, std::vector<Vector>, std::vector<Point2D>> Cone::
                 normals.push_back(n3);
                 normals.push_back(n_top);
 
+                textures.push_back(Point2D((i * alpha)/ 360, 1 - 1/stacks));
+                textures.push_back(Point2D(((i+1) * alpha)/ 360, 1 - 1/stacks));
+                textures.push_back(Point2D(((i + 0.5) * alpha)/ 360, 1));
+
                             
             }else{
                 points.push_back(lateral1);
@@ -90,6 +97,11 @@ std::tuple<std::vector<Point>, std::vector<Vector>, std::vector<Point2D>> Cone::
                 normals.push_back(n3);
                 normals.push_back(n4);
 
+                textures.push_back(Point2D((i * alpha)/ 360, j/stacks));
+                textures.push_back(Point2D(((i + 1) * alpha)/ 360, j/stacks));
+                textures.push_back(Point2D((i * alpha)/ 360, (j + 1)/stacks));
+
+
                 points.push_back(lateral3);
                 points.push_back(lateral2);
                 points.push_back(lateral4);
@@ -97,6 +109,10 @@ std::tuple<std::vector<Point>, std::vector<Vector>, std::vector<Point2D>> Cone::
                 normals.push_back(n3);
                 normals.push_back(n2);
                 normals.push_back(n4);
+
+                textures.push_back(Point2D(((i + 1) * alpha)/ 360, j/stacks));
+                textures.push_back(Point2D(((i + 1) * alpha)/ 360, (j + 1)/stacks));
+                textures.push_back(Point2D((i * alpha)/ 360, (j + 1)/stacks));
             }
 
         }

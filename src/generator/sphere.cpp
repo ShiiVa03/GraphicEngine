@@ -42,6 +42,10 @@ std::tuple<std::vector<Point>, std::vector<Vector>, std::vector<Point2D>> Sphere
         normals.push_back(Vector(p2.x/radius, p2.y/radius, p2.z/radius));
         normals.push_back(Vector(centerHigh.x/radius, centerHigh.y/radius, centerHigh.z/radius));
 
+        textures.push_back(Point2D((i * alpha)/(2 * M_PI) , 1 - beta / M_PI));
+        textures.push_back(Point2D(((i + 1) * alpha)/(2 * M_PI) , 1 - beta / M_PI));
+        textures.push_back(Point2D((i + 0.5) * alpha / (2 * M_PI), 1));
+
         for(int j = 1; j < stacks; ++j){
             //starting up-down
             Point pointDownL(SphericalCoord(alpha * i, M_PI / 2 - beta * (j + 1), radius));
@@ -58,6 +62,10 @@ std::tuple<std::vector<Point>, std::vector<Vector>, std::vector<Point2D>> Sphere
                 normals.push_back(Vector(centerDown.x/radius, centerDown.y/radius, centerDown.z/radius));
                 normals.push_back(Vector(pointR.x/radius, pointR.y/radius, pointR.z/radius));
                 normals.push_back(Vector(pointL.x/radius, pointL.y/radius, pointL.z/radius));
+
+                textures.push_back(Point2D(((i + 0.5) * alpha)/(2 * M_PI) , 0));
+                textures.push_back(Point2D(((i + 1) * alpha)/(2 * M_PI) , beta / M_PI));
+                textures.push_back(Point2D(i * alpha / (2 * M_PI), beta / M_PI));
                 
             }else{
                 points.push_back(pointDownL);
@@ -68,6 +76,10 @@ std::tuple<std::vector<Point>, std::vector<Vector>, std::vector<Point2D>> Sphere
                 normals.push_back(Vector(pointDownR.x/radius, pointDownR.y/radius, pointDownR.z/radius));
                 normals.push_back(Vector(pointL.x/radius, pointL.y/radius, pointL.z/radius));
 
+                textures.push_back(Point2D((i * alpha)/(2 * M_PI) , 1 - ((j + 1) * beta)  /M_PI));
+                textures.push_back(Point2D(((i + 1) * alpha)/(2 * M_PI) , 1 - ((j + 1) * beta) / M_PI));
+                textures.push_back(Point2D(i * alpha / (2 * M_PI), 1 - (j * beta) / M_PI));
+
                 points.push_back(pointDownR);
                 points.push_back(pointR);
                 points.push_back(pointL);
@@ -75,6 +87,10 @@ std::tuple<std::vector<Point>, std::vector<Vector>, std::vector<Point2D>> Sphere
                 normals.push_back(Vector(pointDownR.x/radius, pointDownR.y/radius, pointDownR.z/radius));
                 normals.push_back(Vector(pointR.x/radius, pointR.y/radius, pointR.z/radius));
                 normals.push_back(Vector(pointL.x/radius, pointL.y/radius, pointL.z/radius));
+
+                textures.push_back(Point2D(((i + 1) * alpha)/(2 * M_PI) , 1 - ((j + 1)  * beta) /M_PI));
+                textures.push_back(Point2D(((i + 1) * alpha)/(2 * M_PI) , 1 - (j * beta) / M_PI));
+                textures.push_back(Point2D(i * alpha / (2 * M_PI), 1 - (j * beta)  / M_PI));
             }        
         }
     }

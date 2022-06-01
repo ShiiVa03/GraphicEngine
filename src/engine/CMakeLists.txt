@@ -57,16 +57,16 @@ else (WIN32) #Linux and Mac
     add_definitions(${GLUT_DEFINITIONS})
 
     find_package(DevIL REQUIRED)
-	link_libraries(${IL_LIBRARIES} )
+	link_libraries(${IL_LIBRARIES})
 	include_directories(${IL_INCLUDE_DIR})
 
     if (NOT APPLE)
 		find_package(GLEW REQUIRED)
 		include_directories(${GLEW_INCLUDE_DIRS})
 		link_libraries(${GLEW_LIBRARIES})
-		target_link_libraries( engine utils pugixml ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES} ${GLEW_LIBRARIES})
+		target_link_libraries( engine utils pugixml ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES} ${GLEW_LIBRARIES} ${IL_LIBRARIES})
 	else (NOT APPLE)
-		target_link_libraries( engine utils pugixml ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES} )
+		target_link_libraries( engine utils pugixml ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES} ${IL_LIBRARIES} ${GLEW_LIBRARIES})
 	endif(NOT APPLE)
 
     if(NOT GLUT_FOUND)

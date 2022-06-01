@@ -19,22 +19,22 @@ std::tuple<std::vector<Point>, std::vector<Vector>, std::vector<Point2D>> Box::d
 
     //following top-down, left-right approach like before
     //upper face
-    plane.drawPlane(points, normals, textures, Point(-half, half, -half), Vector(vectorSize, 0.0f , 0.0f), Vector(0.0f, 0.0f, vectorSize), Vector(0, 1, 0));
+    plane.drawPlane(points, normals, textures, Point(-half, half, -half), Vector(vectorSize, 0.0f , 0.0f), Vector(0.0f, 0.0f, vectorSize), Vector(0, 1, 0), true);
     
     //back face
-    plane.drawPlane(points, normals, textures, Point(-half, half, -half), Vector(0.0f, 0.0f, vectorSize), Vector(0.0f, -vectorSize, 0.0f), Vector(-1, 0, 0));
+    plane.drawPlane(points, normals, textures, Point(-half, half, -half), Vector(0.0f, 0.0f, vectorSize), Vector(0.0f, -vectorSize, 0.0f), Vector(-1, 0, 0), true);
 
     //left face
-    plane.drawPlane(points, normals, textures, Point(-half, half, half), Vector(vectorSize, 0.0f, 0.0f), Vector(0.0f, -vectorSize, 0.0f), Vector(0, 0, 1));
+    plane.drawPlane(points, normals, textures, Point(-half, half, half), Vector(vectorSize, 0.0f, 0.0f), Vector(0.0f, -vectorSize, 0.0f), Vector(0, 0, 1), true);
 
     //rigth face
-    plane.drawPlane(points, normals, textures, Point(half, half, -half), Vector(-vectorSize, 0.0f, 0.0f), Vector(0.0f, -vectorSize, 0.0f), Vector(0, 0, -1));
+    plane.drawPlane(points, normals, textures, Point(half, half, -half), Vector(-vectorSize, 0.0f, 0.0f), Vector(0.0f, -vectorSize, 0.0f), Vector(0, 0, -1), true);
 
     //front face(need to start bottom-up to verify right hand rule)
-    plane.drawPlane(points, normals, textures, Point(half, -half, -half), Vector(0.0f, 0.0f, vectorSize), Vector(0.0f, vectorSize, 0.0f), Vector(1, 0, 0));
+    plane.drawPlane(points, normals, textures, Point(half, -half, -half), Vector(0.0f, 0.0f, vectorSize), Vector(0.0f, vectorSize, 0.0f), Vector(1, 0, 0), true);
 
     //bottom face
-    plane.drawPlane(points, normals, textures, Point(-half, -half, half), Vector(vectorSize, 0.0f, 0.0f), Vector(0.0f, 0.0f, -vectorSize), Vector(0, -1, 0));
+    plane.drawPlane(points, normals, textures, Point(-half, -half, half), Vector(vectorSize, 0.0f, 0.0f), Vector(0.0f, 0.0f, -vectorSize), Vector(0, -1, 0), true);
 
     return std::make_tuple(std::move(points), std::move(normals), std::move(textures));
 

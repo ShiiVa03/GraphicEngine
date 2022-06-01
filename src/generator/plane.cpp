@@ -12,7 +12,7 @@ Plane::Plane(float s, float d){
 
 // we choose to pass an origin point instead of doing the required math inside this function 
 //because this function can be used to draw the box and there is no need to rewrite code
-void Plane::drawPlane(std::vector<Point>& points, std::vector<Vector>& normals, std::vector<Point2D>& textures, Point origin, Vector horizontalVec, Vector verticalVec, Vector normal){
+void Plane::drawPlane(std::vector<Point>& points, std::vector<Vector>& normals, std::vector<Point2D>& textures, Point origin, Vector horizontalVec, Vector verticalVec, Vector normal, bool flag){
 
     //starting a top-down, left-right approach since that is how computers draw in screen
     Point refp0 = Point(origin.x, origin.y, origin.z);
@@ -30,6 +30,22 @@ void Plane::drawPlane(std::vector<Point>& points, std::vector<Vector>& normals, 
         Point p3 = Point(refp3.x, refp3.y, refp3.z);
 
         for(int j = 0; j < divisions; ++j){
+
+            if(!flag){
+                textures.push_back(Point2D(j, divisions - i)); 
+                textures.push_back(Point2D(j + 1, divisions - (i + 1)));
+                textures.push_back(Point2D(j + 1, divisions - i));
+                textures.push_back(Point2D(j, divisions - i));
+                textures.push_back(Point2D(j, divisions - (i + 1))); 
+                textures.push_back(Point2D(j + 1, divisions - (i + 1)));
+            }else{
+                textures.push_back(Point2D(j/divisions, 1 - (i/divisions))); 
+                textures.push_back(Point2D((j+1) / divisions, 1 - ((i+1) / divisions)));
+                textures.push_back(Point2D((j + 1) / divisions , 1 - (i/ divisions)));
+                textures.push_back(Point2D(j/divisions, 1 - (i/divisions)));
+                textures.push_back(Point2D(j/ divisions, 1 - ((i+1) / divisions)));
+                textures.push_back(Point2D((j + 1)/divisions, 1 - ((i+1) / divisions)));
+            }
             
             //first triangle(up)
             points.push_back(p0);
@@ -38,9 +54,6 @@ void Plane::drawPlane(std::vector<Point>& points, std::vector<Vector>& normals, 
             normals.push_back(normal);
             normals.push_back(normal);
             normals.push_back(normal);
-            textures.push_back(Point2D(i/divisions, j/divisions));
-            textures.push_back(Point2D((i+1) / divisions, (j+1) / divisions));
-            textures.push_back(Point2D(i / divisions , (j+1) / divisions));
 
             //second triangle(down)
             points.push_back(p0);
@@ -49,10 +62,6 @@ void Plane::drawPlane(std::vector<Point>& points, std::vector<Vector>& normals, 
             normals.push_back(normal);
             normals.push_back(normal);
             normals.push_back(normal);
-            textures.push_back(Point2D(i / divisions, j / divisions));
-            textures.push_back(Point2D((i+1) / divisions, j / divisions));
-            textures.push_back(Point2D((i+1) / divisions, (j+1) / divisions));
-
 
             //translate points horizontally
             p0.addVector(horizontalVec);
@@ -79,7 +88,7 @@ std::tuple<std::vector<Point>, std::vector<Vector>, std::vector<Point2D>> Plane:
     float vectorSize = size / divisions;
     float half = size / 2;
 
-    drawPlane(points, normals, textures, Point(-half, 0, -half), Vector(vectorSize, 0, 0), Vector(0, 0, vectorSize), Vector(0, 1, 0));
+    drawPlane(points, normals, textures, Point(-half, 0, -half), Vector(vectorSize, 0, 0), Vector(0, 0, vectorSize), Vector(0, 1, 0), false);
 
     return std::make_tuple(std::move(points), std::move(normals), std::move(textures));
 }

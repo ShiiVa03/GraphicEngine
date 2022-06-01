@@ -233,7 +233,11 @@ std::tuple<std::vector<Point>, std::vector<Vector>, std::vector<Point2D>> Bezier
 
                 normals.push_back(n0);
                 normals.push_back(n1);
-                normals.push_back(n2);                
+                normals.push_back(n2);
+
+                textures.push_back(Point2D(u, v));
+                textures.push_back(Point2D(nextU, v));
+                textures.push_back(Point2D(nextU, nextV));               
 
                 points.push_back(p2);
                 points.push_back(p3);
@@ -242,6 +246,10 @@ std::tuple<std::vector<Point>, std::vector<Vector>, std::vector<Point2D>> Bezier
                 normals.push_back(n2);
                 normals.push_back(n3);
                 normals.push_back(n0);
+                
+                textures.push_back(Point2D(nextU, nextV));
+                textures.push_back(Point2D(u, nextV));
+                textures.push_back(Point2D(u, v));        
             
             }
         }
