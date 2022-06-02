@@ -562,7 +562,7 @@ int main(int argc, char ** argv) {
 
     ilInit();
     ilEnable(IL_ORIGIN_SET);
-    //ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
+    ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
 
 
     try {
@@ -598,7 +598,7 @@ int main(int argc, char ** argv) {
 
     // Lightning
     glEnable(GL_LIGHTING);
-    glEnable(GL_RESCALE_NORMAL);
+    glEnable(GL_NORMALIZE);
 
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, white);
 
