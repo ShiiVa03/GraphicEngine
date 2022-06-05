@@ -75,6 +75,10 @@ std::tuple<std::vector<Point>, std::vector<Vector>, std::vector<Point2D>> Torus:
             normals.push_back(normal_bottom_right);
             normals.push_back(normal_top_right);
 
+            textures.push_back(Point2D((i * slice_size) / (2 * M_PI), (j * stack_size) / 2 * M_PI));
+            textures.push_back(Point2D(((i + 1) * slice_size) / (2 * M_PI), (j * stack_size) / 2 * M_PI));
+            textures.push_back(Point2D((i + 1) * slice_size / (2 * M_PI), ((j + 1) * stack_size) / M_PI));
+
             points.push_back(p_bottom_left);
             points.push_back(p_top_right);
             points.push_back(p_top_left);
@@ -82,6 +86,10 @@ std::tuple<std::vector<Point>, std::vector<Vector>, std::vector<Point2D>> Torus:
             normals.push_back(normal_bottom_left);
             normals.push_back(normal_top_right);
             normals.push_back(normal_top_left);
+
+            textures.push_back(Point2D((i * slice_size) / (2 * M_PI), (j * stack_size) / 2 * M_PI));
+            textures.push_back(Point2D(((i + 1) * slice_size) / (2 * M_PI), ((j + 1) * stack_size) / 2 * M_PI));
+            textures.push_back(Point2D(i * slice_size / (2 * M_PI), ((j + 1) * stack_size) / M_PI));
         }
 
     }

@@ -10,3 +10,4 @@ class Element:
     file: str
     elements: Tuple[Element] = tuple()
     transformations: Tuple[Transformation] = tuple()
+    texture: str = None

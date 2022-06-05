@@ -6,14 +6,19 @@
 		<up x="0" y="1" z="0"/>
 		<projection fov="60" near="1" far="1000"/>
 	</camera>
+	<lights>
+		<light type="point" posX="0" posY="0" posZ="0"/>
+	</lights>
 	<group>
 		<group>
 			<transform>
 				<scale x="6" y="6" z="6"/>
-				<rotate time="13" x="0" y="0.517" z="0"/>
+				<rotate time="13" x="0" y="0.486" z="0"/>
 			</transform>
 			<models>
-				<model file="sphere.3d"/>
+				<model file="sphere_nt.3d">
+					<texture file="sun.jpg"/>
+				</model>
 			</models>
 		</group>
 		<group>
@@ -44,10 +49,12 @@
 					<point x="7.222" y="0.0" z="-2.023"/>
 				</translate>
 				<scale x="0.5" y="0.5" z="0.5"/>
-				<rotate time="5" x="0" y="0.999" z="0"/>
+				<rotate time="5" x="0" y="0.39" z="0"/>
 			</transform>
 			<models>
-				<model file="sphere.3d"/>
+				<model file="sphere_nt.3d">
+					<texture file="mercury.jpg"/>
+				</model>
 			</models>
 		</group>
 		<group>
@@ -84,10 +91,12 @@
 					<point x="9.278" y="0.0" z="-2.042"/>
 				</translate>
 				<scale x="0.9" y="0.9" z="0.9"/>
-				<rotate time="7" x="0" y="0.078" z="0"/>
+				<rotate time="7" x="0" y="0.288" z="0"/>
 			</transform>
 			<models>
-				<model file="sphere.3d"/>
+				<model file="sphere_nt.3d">
+					<texture file="venus.jpg"/>
+				</model>
 			</models>
 		</group>
 		<group>
@@ -132,10 +141,12 @@
 					<point x="11.827" y="0.0" z="-2.028"/>
 				</translate>
 				<scale x="1" y="1" z="1"/>
-				<rotate time="8" x="0" y="0.858" z="0"/>
+				<rotate time="8" x="0" y="0.874" z="0"/>
 			</transform>
 			<models>
-				<model file="sphere.3d"/>
+				<model file="sphere_nt.3d">
+					<texture file="earth.jpg"/>
+				</model>
 			</models>
 			<group>
 				<transform>
@@ -146,10 +157,12 @@
 						<point x="0.0" y="0.0" z="-1.3"/>
 					</translate>
 					<scale x="0.2" y="0.2" z="0.2"/>
-					<rotate time="6" x="0.149" y="0.322" z="0.887"/>
+					<rotate time="6" x="0.019" y="0.859" z="0.053"/>
 				</transform>
 				<models>
-					<model file="sphere.3d"/>
+					<model file="sphere_nt.3d">
+						<texture file="moon.jpg"/>
+					</model>
 				</models>
 			</group>
 		</group>
@@ -201,10 +214,12 @@
 					<point x="13.851" y="0.0" z="-2.038"/>
 				</translate>
 				<scale x="0.7" y="0.7" z="0.7"/>
-				<rotate time="8" x="0" y="0.587" z="0"/>
+				<rotate time="8" x="0" y="0.774" z="0"/>
 			</transform>
 			<models>
-				<model file="sphere.3d"/>
+				<model file="sphere_nt.3d">
+					<texture file="mars.jpg"/>
+				</model>
 			</models>
 			<group>
 				<transform>
@@ -215,10 +230,12 @@
 						<point x="0.0" y="0.0" z="-1.3"/>
 					</translate>
 					<scale x="0.2" y="0.2" z="0.2"/>
-					<rotate time="6" x="0.48" y="0.858" z="0.187"/>
+					<rotate time="6" x="0.773" y="0.523" z="0.718"/>
 				</transform>
 				<models>
-					<model file="sphere.3d"/>
+					<model file="sphere_nt.3d">
+						<texture file="moon.jpg"/>
+					</model>
 				</models>
 			</group>
 			<group>
@@ -231,10 +248,12 @@
 						<point x="0.525" y="-0.525" z="-1.617"/>
 					</translate>
 					<scale x="0.1" y="0.1" z="0.1"/>
-					<rotate time="6" x="0.04" y="0.567" z="0.889"/>
+					<rotate time="6" x="0.66" y="0.241" z="0.464"/>
 				</transform>
 				<models>
-					<model file="sphere.3d"/>
+					<model file="sphere_nt.3d">
+						<texture file="moon.jpg"/>
+					</model>
 				</models>
 			</group>
 		</group>
@@ -302,10 +321,12 @@
 					<point x="18.892" y="0.0" z="-2.02"/>
 				</translate>
 				<scale x="2.5" y="2.5" z="2.5"/>
-				<rotate time="12" x="0" y="0.75" z="0"/>
+				<rotate time="12" x="0" y="0.488" z="0"/>
 			</transform>
 			<models>
-				<model file="sphere.3d"/>
+				<model file="sphere_nt.3d">
+					<texture file="jupiter.jpg"/>
+				</model>
 			</models>
 			<group>
 				<transform>
@@ -316,10 +337,12 @@
 						<point x="0.0" y="0.0" z="-1.3"/>
 					</translate>
 					<scale x="0.15" y="0.15" z="0.15"/>
-					<rotate time="6" x="0.303" y="0.446" z="0.442"/>
+					<rotate time="6" x="0.521" y="0.774" z="0.695"/>
 				</transform>
 				<models>
-					<model file="sphere.3d"/>
+					<model file="sphere_nt.3d">
+						<texture file="moon.jpg"/>
+					</model>
 				</models>
 			</group>
 			<group>
@@ -332,10 +355,12 @@
 						<point x="0.525" y="-0.525" z="-1.617"/>
 					</translate>
 					<scale x="0.1" y="0.1" z="0.1"/>
-					<rotate time="6" x="0.5" y="0.104" z="0.044"/>
+					<rotate time="6" x="0.722" y="0.976" z="0.224"/>
 				</transform>
 				<models>
-					<model file="sphere.3d"/>
+					<model file="sphere_nt.3d">
+						<texture file="moon.jpg"/>
+					</model>
 				</models>
 			</group>
 			<group>
@@ -350,10 +375,12 @@
 						<point x="1.512" y="0.873" z="-1.896"/>
 					</translate>
 					<scale x="0.2" y="0.2" z="0.2"/>
-					<rotate time="6" x="0.269" y="0.162" z="0.492"/>
+					<rotate time="6" x="0.69" y="0.861" z="0.177"/>
 				</transform>
 				<models>
-					<model file="sphere.3d"/>
+					<model file="sphere_nt.3d">
+						<texture file="moon.jpg"/>
+					</model>
 				</models>
 			</group>
 			<group>
@@ -368,10 +395,12 @@
 						<point x="1.502" y="0.998" z="-1.883"/>
 					</translate>
 					<scale x="0.12" y="0.12" z="0.12"/>
-					<rotate time="6" x="0.096" y="0.232" z="0.506"/>
+					<rotate time="6" x="0.912" y="0.044" z="0.048"/>
 				</transform>
 				<models>
-					<model file="sphere.3d"/>
+					<model file="sphere_nt.3d">
+						<texture file="moon.jpg"/>
+					</model>
 				</models>
 			</group>
 			<group>
@@ -383,10 +412,12 @@
 						<point x="0.0" y="0.0" z="-1.414"/>
 					</translate>
 					<scale x="0.17" y="0.17" z="0.17"/>
-					<rotate time="6" x="0.195" y="0.582" z="0.716"/>
+					<rotate time="6" x="0.259" y="0.034" z="0.765"/>
 				</transform>
 				<models>
-					<model file="sphere.3d"/>
+					<model file="sphere_nt.3d">
+						<texture file="moon.jpg"/>
+					</model>
 				</models>
 			</group>
 			<group>
@@ -400,10 +431,12 @@
 						<point x="0.96" y="0.0" z="-1.664"/>
 					</translate>
 					<scale x="0.14" y="0.14" z="0.14"/>
-					<rotate time="6" x="0.919" y="0.282" z="0.802"/>
+					<rotate time="6" x="0.097" y="0.452" z="0.495"/>
 				</transform>
 				<models>
-					<model file="sphere.3d"/>
+					<model file="sphere_nt.3d">
+						<texture file="moon.jpg"/>
+					</model>
 				</models>
 			</group>
 		</group>
@@ -490,14 +523,18 @@
 					<point x="24.919" y="0.0" z="-2.012"/>
 				</translate>
 				<scale x="2" y="2" z="2"/>
-				<rotate time="10" x="0" y="0.1" z="0"/>
+				<rotate time="10" x="0" y="0.576" z="0"/>
 			</transform>
 			<models>
-				<model file="sphere.3d"/>
+				<model file="sphere_nt.3d">
+					<texture file="saturn.jpg"/>
+				</model>
 			</models>
 			<group>
 				<models>
-					<model file="torus.3d"/>
+					<model file="torus_nt.3d">
+						<texture file="saturn_ring.jpg"/>
+					</model>
 				</models>
 			</group>
 			<group>
@@ -509,10 +546,12 @@
 						<point x="0.0" y="0.0" z="-1.3"/>
 					</translate>
 					<scale x="0.15" y="0.15" z="0.15"/>
-					<rotate time="6" x="0.044" y="0.7" z="0.632"/>
+					<rotate time="6" x="0.486" y="0.74" z="0.458"/>
 				</transform>
 				<models>
-					<model file="sphere.3d"/>
+					<model file="sphere_nt.3d">
+						<texture file="moon.jpg"/>
+					</model>
 				</models>
 			</group>
 			<group>
@@ -525,10 +564,12 @@
 						<point x="0.525" y="0.525" z="-1.617"/>
 					</translate>
 					<scale x="0.1" y="0.1" z="0.1"/>
-					<rotate time="6" x="0.377" y="0.246" z="0.546"/>
+					<rotate time="6" x="0.988" y="0.712" z="0.095"/>
 				</transform>
 				<models>
-					<model file="sphere.3d"/>
+					<model file="sphere_nt.3d">
+						<texture file="moon.jpg"/>
+					</model>
 				</models>
 			</group>
 			<group>
@@ -543,10 +584,12 @@
 						<point x="1.512" y="-0.873" z="-1.896"/>
 					</translate>
 					<scale x="0.2" y="0.2" z="0.2"/>
-					<rotate time="6" x="0.474" y="0.455" z="0.411"/>
+					<rotate time="6" x="0.241" y="0.308" z="0.534"/>
 				</transform>
 				<models>
-					<model file="sphere.3d"/>
+					<model file="sphere_nt.3d">
+						<texture file="moon.jpg"/>
+					</model>
 				</models>
 			</group>
 			<group>
@@ -561,10 +604,12 @@
 						<point x="1.502" y="-0.998" z="-1.883"/>
 					</translate>
 					<scale x="0.12" y="0.12" z="0.12"/>
-					<rotate time="6" x="0.34" y="0.007" z="0.329"/>
+					<rotate time="6" x="0.911" y="0.339" z="0.701"/>
 				</transform>
 				<models>
-					<model file="sphere.3d"/>
+					<model file="sphere_nt.3d">
+						<texture file="moon.jpg"/>
+					</model>
 				</models>
 			</group>
 			<group>
@@ -577,10 +622,12 @@
 						<point x="0.507" y="0.0" z="-1.56"/>
 					</translate>
 					<scale x="0.17" y="0.17" z="0.17"/>
-					<rotate time="6" x="0.257" y="0.795" z="0.949"/>
+					<rotate time="6" x="0.358" y="0.34" z="0.316"/>
 				</transform>
 				<models>
-					<model file="sphere.3d"/>
+					<model file="sphere_nt.3d">
+						<texture file="moon.jpg"/>
+					</model>
 				</models>
 			</group>
 			<group>
@@ -594,10 +641,12 @@
 						<point x="0.96" y="0.0" z="-1.664"/>
 					</translate>
 					<scale x="0.14" y="0.14" z="0.14"/>
-					<rotate time="6" x="0.017" y="0.865" z="0.652"/>
+					<rotate time="6" x="0.791" y="0.989" z="0.634"/>
 				</transform>
 				<models>
-					<model file="sphere.3d"/>
+					<model file="sphere_nt.3d">
+						<texture file="moon.jpg"/>
+					</model>
 				</models>
 			</group>
 		</group>
@@ -703,10 +752,12 @@
 					<point x="30.935" y="0.0" z="-2.007"/>
 				</translate>
 				<scale x="1.6" y="1.6" z="1.6"/>
-				<rotate time="9" x="0" y="0.712" z="0"/>
+				<rotate time="9" x="0" y="0.185" z="0"/>
 			</transform>
 			<models>
-				<model file="sphere.3d"/>
+				<model file="sphere_nt.3d">
+					<texture file="uranus.jpg"/>
+				</model>
 			</models>
 			<group>
 				<transform>
@@ -718,10 +769,12 @@
 						<point x="0.507" y="0.402" z="-1.56"/>
 					</translate>
 					<scale x="0.15" y="0.15" z="0.15"/>
-					<rotate time="6" x="0.54" y="0.012" z="0.775"/>
+					<rotate time="6" x="0.47" y="0.91" z="0.521"/>
 				</transform>
 				<models>
-					<model file="sphere.3d"/>
+					<model file="sphere_nt.3d">
+						<texture file="moon.jpg"/>
+					</model>
 				</models>
 			</group>
 			<group>
@@ -735,10 +788,12 @@
 						<point x="1.04" y="-0.85" z="-1.802"/>
 					</translate>
 					<scale x="0.1" y="0.1" z="0.1"/>
-					<rotate time="6" x="0.829" y="0.068" z="0.423"/>
+					<rotate time="6" x="0.086" y="0.681" z="0.727"/>
 				</transform>
 				<models>
-					<model file="sphere.3d"/>
+					<model file="sphere_nt.3d">
+						<texture file="moon.jpg"/>
+					</model>
 				</models>
 			</group>
 			<group>
@@ -753,10 +808,12 @@
 						<point x="1.423" y="0.998" z="-1.785"/>
 					</translate>
 					<scale x="0.2" y="0.2" z="0.2"/>
-					<rotate time="6" x="0.528" y="0.436" z="0.029"/>
+					<rotate time="6" x="0.412" y="0.425" z="0.606"/>
 				</transform>
 				<models>
-					<model file="sphere.3d"/>
+					<model file="sphere_nt.3d">
+						<texture file="moon.jpg"/>
+					</model>
 				</models>
 			</group>
 			<group>
@@ -770,10 +827,12 @@
 						<point x="1.082" y="0.6" z="-1.873"/>
 					</translate>
 					<scale x="0.12" y="0.12" z="0.12"/>
-					<rotate time="6" x="0.357" y="0.888" z="0.575"/>
+					<rotate time="6" x="0.428" y="0.547" z="0.278"/>
 				</transform>
 				<models>
-					<model file="sphere.3d"/>
+					<model file="sphere_nt.3d">
+						<texture file="moon.jpg"/>
+					</model>
 				</models>
 			</group>
 			<group>
@@ -785,10 +844,12 @@
 						<point x="0.0" y="0.0" z="-1.414"/>
 					</translate>
 					<scale x="0.17" y="0.17" z="0.17"/>
-					<rotate time="6" x="0.261" y="0.48" z="0.34"/>
+					<rotate time="6" x="0.379" y="0.715" z="0.563"/>
 				</transform>
 				<models>
-					<model file="sphere.3d"/>
+					<model file="sphere_nt.3d">
+						<texture file="moon.jpg"/>
+					</model>
 				</models>
 			</group>
 		</group>
@@ -906,10 +967,12 @@
 					<point x="34.942" y="0.0" z="-2.016"/>
 				</translate>
 				<scale x="1.5" y="1.5" z="1.5"/>
-				<rotate time="9" x="0" y="0.517" z="0"/>
+				<rotate time="9" x="0" y="0.563" z="0"/>
 			</transform>
 			<models>
-				<model file="sphere.3d"/>
+				<model file="sphere_nt.3d">
+					<texture file="neptune.jpg"/>
+				</model>
 			</models>
 			<group>
 				<transform>
@@ -920,10 +983,12 @@
 						<point x="0.0" y="0.0" z="-1.3"/>
 					</translate>
 					<scale x="0.15" y="0.15" z="0.15"/>
-					<rotate time="6" x="0.285" y="0.515" z="0.193"/>
+					<rotate time="6" x="0.692" y="0.041" z="0.709"/>
 				</transform>
 				<models>
-					<model file="sphere.3d"/>
+					<model file="sphere_nt.3d">
+						<texture file="moon.jpg"/>
+					</model>
 				</models>
 			</group>
 			<group>
@@ -937,10 +1002,12 @@
 						<point x="0.96" y="-0.75" z="-1.664"/>
 					</translate>
 					<scale x="0.1" y="0.1" z="0.1"/>
-					<rotate time="6" x="0.227" y="0.101" z="0.205"/>
+					<rotate time="6" x="0.137" y="0.8" z="0.083"/>
 				</transform>
 				<models>
-					<model file="sphere.3d"/>
+					<model file="sphere_nt.3d">
+						<texture file="moon.jpg"/>
+					</model>
 				</models>
 			</group>
 			<group>
@@ -955,10 +1022,12 @@
 						<point x="1.512" y="0.873" z="-1.896"/>
 					</translate>
 					<scale x="0.2" y="0.2" z="0.2"/>
-					<rotate time="6" x="0.753" y="0.16" z="0.768"/>
+					<rotate time="6" x="0.4" y="0.3" z="0.241"/>
 				</transform>
 				<models>
-					<model file="sphere.3d"/>
+					<model file="sphere_nt.3d">
+						<texture file="moon.jpg"/>
+					</model>
 				</models>
 			</group>
 			<group>
@@ -974,10 +1043,12 @@
 						<point x="1.844" y="1.131" z="-1.844"/>
 					</translate>
 					<scale x="0.12" y="0.12" z="0.12"/>
-					<rotate time="6" x="0.336" y="0.289" z="0.297"/>
+					<rotate time="6" x="0.93" y="0.837" z="0.375"/>
 				</transform>
 				<models>
-					<model file="sphere.3d"/>
+					<model file="sphere_nt.3d">
+						<texture file="moon.jpg"/>
+					</model>
 				</models>
 			</group>
 		</group>
@@ -1143,10 +1214,12 @@
 					<point x="49.96" y="29.976" z="-2.0"/>
 				</translate>
 				<scale x="0.1" y="0.1" z="0.1"/>
-				<rotate time="9" x="0.047" y="0.083" z="0.504"/>
+				<rotate time="9" x="0.515" y="0.029" z="0.998"/>
 			</transform>
 			<models>
-				<model file="bezier.3d"/>
+				<model file="bezier_nt.3d">
+					<texture file="comet.jpg"/>
+				</model>
 			</models>
 		</group>
 	</group>

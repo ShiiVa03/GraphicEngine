@@ -2,6 +2,7 @@ import xml.dom.minidom
 import xml.etree.ElementTree as ET
 
 from typing import Tuple
+from lights import Light
 from camera import Camera
 from element import Element
 from dataclasses import dataclass
@@ -12,6 +13,7 @@ from transformations import Translation, Rotation, Scale
 class GenElementsXML:
     file: str
     camera_options: Camera
+    lights_options: Tuple[Light]
     elements: Tuple[Element]
         
 
@@ -19,6 +21,12 @@ class GenElementsXML:
         world = ET.Element("world")
 
         camera = ET.SubElement(world, "camera")
+
+        lights = ET.SubElement(world, "lights")
+
+        for light in self.lights_options:
+            ET.SubElement(lights, "light", type=str(light), **light.values())
+        
         group = ET.SubElement(world, "group")
 
         ET.SubElement(camera, "position",
@@ -76,7 +84,10 @@ class GenElementsXML:
 
 
         models = ET.SubElement(group, "models")
-        ET.SubElement(models, "model", file=element.file)
+        model = ET.SubElement(models, "model", file=element.file)
+        
+        if element.texture:
+            ET.SubElement(model, "texture", file=element.texture)
 
         
         for sub_element in element.elements:
