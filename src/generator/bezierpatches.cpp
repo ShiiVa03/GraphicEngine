@@ -175,6 +175,7 @@ std::tuple<Point, Vector> Bezier::getBezierPoint(float u, float v, Point matrix[
     Vector vectorV(derivVPoint.x, derivVPoint.y, derivVPoint.z);
 
     Vector normal = vectorU.cross(vectorV);
+    normal.normalize();
 
     Point firstVec[4];
     multMatrixVector(matrix, uvec, firstVec);    

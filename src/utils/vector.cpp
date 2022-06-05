@@ -22,10 +22,14 @@ Vector::Vector(Point a, Point b) {
 
 void Vector::normalize(void) {
     float radius = sqrtf(powf(vx, 2) + powf(vy, 2) + powf(vz, 2));
-
-    vx /= radius;
-    vy /= radius;
-    vz /= radius;
+    if (radius == 0) {
+        vx = vy = vz = 0.0f;
+    }
+    else {
+        vx /= radius;
+        vy /= radius;
+        vz /= radius;
+    }
 }
 
 void Vector::multiply(float x) {

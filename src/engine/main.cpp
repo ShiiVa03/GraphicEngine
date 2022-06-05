@@ -598,7 +598,7 @@ int main(int argc, char ** argv) {
 
     // Lightning
     glEnable(GL_LIGHTING);
-    glEnable(GL_NORMALIZE);
+    glEnable(GL_RESCALE_NORMAL);
 
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, white);
 
