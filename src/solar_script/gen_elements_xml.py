@@ -85,6 +85,11 @@ class GenElementsXML:
 
         models = ET.SubElement(group, "models")
         model = ET.SubElement(models, "model", file=element.file)
+
+        if element.material:
+            colors = ET.SubElement(model, "color")
+            for component, color in element.material.components():
+                ET.SubElement(colors, component, **color)
         
         if element.texture:
             ET.SubElement(model, "texture", file=element.texture)

@@ -1,8 +1,8 @@
 from random import random
 from camera import Camera
-from element import Element
 from orbit import create_orbit
 from gen_elements_xml import GenElementsXML
+from element import Element, Material, Color, Value
 from transformations import Translation, Rotation, Scale
 from lights import PointLight, DirectionalLight, SpotLight
 
@@ -33,7 +33,7 @@ transformations = [
     Scale(6, 6, 6),
     Rotation(13, 0, get_rand(), 0)
 ]
-sun = Element("sphere_nt.3d", transformations=transformations, texture='sun.jpg')
+sun = Element("sphere_nt.3d", transformations=transformations, texture='sun.jpg', material=Material(emissive=Color("255", "255", "255")))
 
 
 #### MERCURY ####
